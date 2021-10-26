@@ -1,0 +1,15 @@
+.panopto-player-container {
+  transition: opacity .5s ease-in-out;
+  -moz-transition: opacity .5s ease-in-out;
+  -webkit-transition: opacity .5s ease-in-out;
+}
+
+.panopto-player-container.no-session {
+    display: none;
+    opacity: 0;
+}
+
+.intro-preview-container {
+  margin-bottom: 20px;
+  margin-top:  20px;
+}
