@@ -35,7 +35,18 @@ class panopto_lti_utility {
         require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/mod/lti/locallib.php');
         
         $ltitooltypes = $DB->get_records('lti_types', null, 'name');
-        $targetservername = $DB->get_field('block_panopto_foldermap', 'panopto_server', array('moodleid' => $courseid));
+        
+        $targetservername = null;
+
+        $blockexists = $DB->get_record('block', array('name' => 'panopto'), 'name');
+        if (!empty($blockexists)) {
+           $targetservername = $DB->get_field('block_panopto_foldermap', 'panopto_server', array('moodleid' => $courseid));
+        }
+
+        // If the course if not provisioned with the Panopto block then get the default panopto server fqdn.
+        if (empty($targetservername)) {
+            $targetservername = get_config('mod_panoptocourseembed', 'default_panopto_server');
+        }
 
         $tooltypes = [];
         foreach ($ltitooltypes as $type) {
@@ -71,7 +82,18 @@ class panopto_lti_utility {
         require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/mod/lti/locallib.php');
         
         $ltitooltypes = $DB->get_records('lti_types', null, 'name');
-        $targetservername = $DB->get_field('block_panopto_foldermap', 'panopto_server', array('moodleid' => $courseid));
+
+        $targetservername = null;
+
+        $blockexists = $DB->get_record('block', array('name' => 'panopto'), 'name');
+        if (!empty($blockexists)) {
+           $targetservername = $DB->get_field('block_panopto_foldermap', 'panopto_server', array('moodleid' => $courseid));
+        }
+
+        // If the course if not provisioned with the Panopto block then get the default panopto server fqdn.
+        if (empty($targetservername)) {
+            $targetservername = get_config('mod_panoptocourseembed', 'default_panopto_server');
+        }
 
         $tooltypes = [];
         foreach ($ltitooltypes as $type) {
@@ -81,7 +103,7 @@ class panopto_lti_utility {
                 ]
             );
 
-            if (!empty($targetservername) && strpos($type->config['toolurl'], $targetservername) !== false && 
+            if (!empty($targetservername) && stripos($type->config['toolurl'], $targetservername) !== false && 
                 $type->state == LTI_TOOL_STATE_CONFIGURED) {
                 $currentconfig = lti_get_type_config($type->id);
 

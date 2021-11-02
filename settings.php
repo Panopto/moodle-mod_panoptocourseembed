@@ -24,3 +24,27 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
+
+
+require_once(dirname(__FILE__) . '/classes/admin/trim_configtext.php');
+
+if ($ADMIN->fulltree) {
+    $settings->add(
+        new admin_setting_configtext_trimmed_courseembed(
+            'mod_panoptocourseembed/default_panopto_server',
+            get_string('default_panopto_server', 'mod_panoptocourseembed'),
+            get_string('default_panopto_server_desc', 'mod_panoptocourseembed'),
+            '',
+            PARAM_TEXT
+        )
+    );
+
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'mod_panoptocourseembed/auto_create_folderview_on_new_courses',
+            get_string('auto_create_folderview_on_new_courses', 'mod_panoptocourseembed'),
+            get_string('auto_create_folderview_on_new_courses_desc', 'mod_panoptocourseembed'),
+            0
+        )
+    );
+}

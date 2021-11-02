@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Panopto course embed module version info
+ * contains the different events Panopto can expect to handle
  *
  * @package mod_panoptocourseembed
  * @copyright  Panopto 2021
@@ -24,8 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020061522;       // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2020060900;    // Requires this Moodle version
-$plugin->component = 'mod_panoptocourseembed'; // Full name of the plugin (used for diagnostics)
-$plugin->cron      = 0;
-$plugin->maturity = MATURITY_BETA;
+$observers = array(
+    array(
+        'eventname' => '\core\event\course_created',
+        'callback' => 'mod_panoptocourseembed_rollingsync::coursecreated',
+    )
+);
