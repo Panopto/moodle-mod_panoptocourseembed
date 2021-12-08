@@ -13,3 +13,10 @@
   margin-bottom: 20px;
   margin-top:  20px;
 }
+
+.panopto-btn-divider {
+  position: relative;
+  width: 20px;
+  height: auto;
+  display: inline-block;
+}
