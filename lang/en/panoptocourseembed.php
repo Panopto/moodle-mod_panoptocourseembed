@@ -48,5 +48,3 @@ $string['replacevideo'] = 'Replace Video';
 $string['folderview'] = 'Embed Folder View';
 $string['default_panopto_server'] = 'Default Panopto Server';
 $string['default_panopto_server_desc'] = 'The FQDN of the Panopto server we will try to use in the case a course is not provisioned with Panopto via the block. E.g. demo.hosted.panopto.com';
-$string['auto_create_folderview_on_new_courses'] = 'Automatically add a folder view embed to new courses';
-$string['auto_create_folderview_on_new_courses_desc'] = 'If enabled this toggle will automatically embed a folder module into the first section of newly created courses.';

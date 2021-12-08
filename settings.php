@@ -38,13 +38,4 @@ if ($ADMIN->fulltree) {
             PARAM_TEXT
         )
     );
-
-    $settings->add(
-        new admin_setting_configcheckbox(
-            'mod_panoptocourseembed/auto_create_folderview_on_new_courses',
-            get_string('auto_create_folderview_on_new_courses', 'mod_panoptocourseembed'),
-            get_string('auto_create_folderview_on_new_courses_desc', 'mod_panoptocourseembed'),
-            0
-        )
-    );
 }
