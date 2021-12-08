@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,26 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Panopto course embed module settings information
+ * contains the different events Panopto can expect to handle
  *
  * @package mod_panoptocourseembed
  * @copyright  Panopto 2021
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
-
-require_once(dirname(__FILE__) . '/classes/admin/trim_configtext.php');
-
-if ($ADMIN->fulltree) {
-    $settings->add(
-        new admin_setting_configtext_trimmed_courseembed(
-            'mod_panoptocourseembed/default_panopto_server',
-            get_string('default_panopto_server', 'mod_panoptocourseembed'),
-            get_string('default_panopto_server_desc', 'mod_panoptocourseembed'),
-            '',
-            PARAM_TEXT
-        )
-    );
-}
+$observers = array(
+    array(
+        'eventname' => '\core\event\course_created',
+        'callback' => 'mod_panoptocourseembed_rollingsync::coursecreated',
+    )
+);

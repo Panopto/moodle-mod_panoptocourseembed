@@ -46,3 +46,5 @@ $string['search:activity'] = 'Panopto course embed';
 $string['selectvideo'] = 'Select Video';
 $string['replacevideo'] = 'Replace Video';
 $string['folderview'] = 'Embed Folder View';
+$string['default_panopto_server'] = 'Default Panopto Server';
+$string['default_panopto_server_desc'] = 'The FQDN of the Panopto server we will try to use in the case a course is not provisioned with Panopto via the block. E.g. demo.hosted.panopto.com';
