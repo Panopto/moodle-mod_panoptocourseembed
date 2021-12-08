@@ -24,7 +24,7 @@
  */
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-require_once(dirname(__FILE__) . '/lib/panopto_lti_utility.php');
+require_once(dirname(__FILE__) . '/lib/panoptocourseembed_lti_utility.php');
 
 
 $courseid = required_param('course', PARAM_INT);
@@ -43,26 +43,14 @@ if (!is_object($contentitems) && !is_array($contentitems)) {
     $errors[] = 'invalidjson';
 }
 
-error_log(print_r($contentitems, true));
-error_log(print_r($contentitems->{'@graph'}[0]->placementAdvice->displayWidth, true));
-error_log(print_r($contentitems->{'@graph'}[0]->placementAdvice, true));
-error_log(print_r($contentitems->{'@graph'}[0], true));
-error_log(print_r($contentitems->{'@graph'}, true));
-
+$framewidth = 720;
 if (!empty($contentitems->{'@graph'}[0]->placementAdvice->displayWidth)) {
-    error_log("displayWidth was NOT empty");
     $framewidth = $contentitems->{'@graph'}[0]->placementAdvice->displayWidth;
-} else {
-    error_log("displayWidth was empty");
-    $framewidth = 720;
 }
 
+$frameheight = 480;
 if (!empty($contentitems->{'@graph'}[0]->placementAdvice->displayHeight)) {
-    error_log("displayHeight was NOT empty");
     $frameheight = $contentitems->{'@graph'}[0]->placementAdvice->displayHeight;
-} else {
-    error_log("displayHeight was empty");
-    $frameheight = 480;
 }
 
 $customdata = $contentitems->{'@graph'}[0]->custom;

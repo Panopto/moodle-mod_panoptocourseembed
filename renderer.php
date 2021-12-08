@@ -58,6 +58,12 @@ class mod_panoptocourseembed_renderer extends plugin_renderer_base {
         $html .= html_writer::empty_tag('input', $attr);
 
         $attr = array(
+            'class' => 'panopto-btn-divider'
+        );
+        $html .= html_writer::start_tag('div', $attr);
+        $html .= html_writer::end_tag('div');
+
+        $attr = array(
             'class' => 'btn btn-primary',
             'type' => 'button',
             'name' => 'folder_view',
