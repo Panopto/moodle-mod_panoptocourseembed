@@ -39,6 +39,7 @@ $string['modulename'] = 'Panopto course embed';
 $string['modulename_help'] = 'The Panopto course embed module enables Panopto video sessions and folder views to be inserted into the course page in between links to other resources and activities.';
 $string['modulename_link'] = 'mod/panoptocourseembed/view';
 $string['modulenameplural'] = 'Panopto course embeds';
+$string['no_existing_lti_tools'] = 'No pre-configured LTI tool exists for your Panopto server. Please contact your Moodle administrator and make sure that the one time admin setup was completed.';
 $string['privacy:metadata'] = 'The Panopto course embed resource plugin does not store any personal data.';
 $string['pluginadministration'] = 'Panopto course embed administration';
 $string['pluginname'] = 'Panopto course embed';

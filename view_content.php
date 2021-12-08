@@ -27,7 +27,7 @@ function init_panoptocourseembed_view() {
     if (empty($CFG)) {
         require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
     }
-    require_once(dirname(__FILE__) . '/lib/panopto_lti_utility.php');
+    require_once(dirname(__FILE__) . '/lib/panoptocourseembed_lti_utility.php');
     require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/lib.php');
     require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/locallib.php');
 
@@ -43,7 +43,7 @@ function init_panoptocourseembed_view() {
     require_capability('mod/lti:view', $context);
 
     // Get a matching LTI tool for the course. 
-    $toolid = \panopto_lti_utility::panoptocourseembed_get_course_tool_id($courseid);
+    $toolid = \panoptocourseembed_lti_utility::get_course_tool_id($courseid);
 
     // If no lti tool exists then we can not continue. 
     if (is_null($toolid)) {
@@ -69,7 +69,7 @@ function init_panoptocourseembed_view() {
         }
     }
     
-    echo \panopto_lti_utility::panoptocourseembed_launch_tool($lti);
+    echo \panoptocourseembed_lti_utility::launch_tool($lti);
 }
 
 init_panoptocourseembed_view();
