@@ -64,7 +64,8 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
         $url = new moodle_url('/mod/panoptocourseembed/view_content.php', $urlparams);
 
         // default intro should be a folderview
-        $defaultintro = '<p><iframe src="' . $url . '" height=480 width=720></iframe><br /></p>';
+        $defaultintro = '<p><iframe src="' . $url . '" style="width:100%; height:100%; min-width:800px; min-height:600px;">' .
+                '</iframe><br /></p>';
         $mform->addElement('hidden', 'intro', $defaultintro);
         $mform->setType('intro', PARAM_RAW);
 

@@ -55,7 +55,7 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         var selectvidbtn = Y.one('#' + params.selectvidbtnid),
            folderviewbtn = Y.one('#' + params.folderviewbtnid);
         selectvidbtn.on('click', this.open_panopto_window_callback, this, params.lticimlaunchurl, params.height, params.width);
-        folderviewbtn.on('click', this.panopto_folder_view_callback, this, params.ltilaunchurl, 480, 720); 
+        folderviewbtn.on('click', this.panopto_folder_view_callback, this, params.ltilaunchurl, 600, 800); 
     },
 
     /**
@@ -84,8 +84,11 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
     panopto_folder_view_callback: function(e, url, height, width) {// Update the iframe element attributes and sec to point to correct content.
         var newContentSource = new URL(url),
         newIntro = '<p><iframe src="' + newContentSource.toString() + '"' +
-                           ' width="' + width + '"' +
-                           ' height="' + height + '"></iframe><br></p>';
+                       ' style="width:100%;' +
+                               ' height:100%;' + 
+                               ' min-width:'+ width + 'px;' +
+                               ' min-height:' + height + 'px;">' +
+                    '</iframe><br /></p>';
         
         Y.one('input[name=intro]').setAttribute('value', newIntro);
         Y.one('#panopto-intro-preview').setContent(newIntro);
