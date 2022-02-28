@@ -95,10 +95,10 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         Y.one('input[name=intro]').setAttribute('value', newIntro);
         Y.one('#panopto-intro-preview').setContent(newIntro);
 
-        Y.one('#id_select_video').set('value', M.util.get_string('replacevideo', 'panoptocourseembed'));
+        Y.one('#id_select_video').set('value', M.util.get_string('selectvideo', 'panoptocourseembed'));
         // Update button classes.
-        Y.one('#id_select_video').addClass('btn-secondary');
-        Y.one('#id_select_video').removeClass('btn-primary');
+        Y.one('#id_select_video').removeClass('btn-secondary');
+        Y.one('#id_select_video').addClass('btn-primary');
     },
 
     close_popup_callback: function(closeEvent) {
