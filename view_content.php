@@ -32,6 +32,20 @@ function init_panoptocourseembed_view() {
     require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/locallib.php');
 
     $courseid  = required_param('course', PARAM_INT);
+
+    // Try to detect if we are viewing content from an iframe nested in course, get the Id param if it exists.
+    $refererurl = $_SERVER['HTTP_REFERER'];
+    if (!empty($refererurl)) {
+        $components = parse_url($refererurl);
+        parse_str($components['query'], $results);
+        
+        $nestedcourseid = $results['id'];
+
+        if (!empty($nestedcourseid)) {
+            $courseid = $nestedcourseid;
+        }
+    }
+
     $contenturl = urldecode(optional_param('contenturl', '', PARAM_URL));
     $customdata = urldecode(optional_param('custom', '', PARAM_RAW_TRIMMED));
 
@@ -61,6 +75,8 @@ function init_panoptocourseembed_view() {
     $lti->custom = new stdClass();
     $lti->instructorcustomparameters = [];
     $lti->debuglaunch = false;
+    $lti->course = $courseid;
+    
     if ($customdata) {
         $decoded = json_decode($customdata, true);
         
