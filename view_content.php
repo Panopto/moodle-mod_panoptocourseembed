@@ -39,10 +39,8 @@ function init_panoptocourseembed_view() {
         $components = parse_url($refererurl);
         parse_str($components['query'], $results);
         
-        $nestedcourseid = $results['id'];
-
-        if (!empty($nestedcourseid)) {
-            $courseid = $nestedcourseid;
+        if (!empty($results['id'])) {
+            $courseid = $results['id'];
         }
     }
 
