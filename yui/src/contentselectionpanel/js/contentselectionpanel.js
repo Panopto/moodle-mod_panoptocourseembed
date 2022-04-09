@@ -55,7 +55,13 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         var selectvidbtn = Y.one('#' + params.selectvidbtnid),
            folderviewbtn = Y.one('#' + params.folderviewbtnid);
         selectvidbtn.on('click', this.open_panopto_window_callback, this, params.lticimlaunchurl, params.height, params.width);
-        folderviewbtn.on('click', this.panopto_folder_view_callback, this, params.ltilaunchurl, 600, 800); 
+        folderviewbtn.on('click', this.panopto_folder_view_callback, this, params.ltilaunchurl, 600, 800);
+
+        this._createResourceLinkId = (function (base) {
+            return function () {
+                return base + '_' + (new Date()).getTime();
+            };
+        }(params.resourcebase));
     },
 
     /**
@@ -109,6 +115,7 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         search_params.set('course', this.courseid);
         search_params.set('custom', decodeURI(closeEvent.detail.customData));
         search_params.set('contentUrl', closeEvent.detail.contentUrl);
+        search_params.set('resourcelinkid', this._createResourceLinkId());
 
         // change the search property of the main url
         newContentSource.search = search_params.toString();
@@ -152,6 +159,9 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         },
         courseid : {
             value: 0
+        },
+        resourcebase : {
+            value: '0'
         }
     }
 });

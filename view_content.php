@@ -32,6 +32,7 @@ function init_panoptocourseembed_view() {
     require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/locallib.php');
 
     $courseid  = required_param('course', PARAM_INT);
+    $resourcelinkid  = optional_param('resourcelinkid', '', PARAM_INT);
 
     // Try to detect if we are viewing content from an iframe nested in course, get the Id param if it exists.
     if (!empty($_SERVER['HTTP_REFERER']) && (strpos($_SERVER['HTTP_REFERER'], "/course/view.php") !== false)) {
@@ -40,11 +41,21 @@ function init_panoptocourseembed_view() {
         
         if (!empty($results['id'])) {
             $courseid = $results['id'];
-            $course = $DB->get_record('course', array('id' => $results['id']), '*', MUST_EXIST);
-            $context = context_course::instance($results['id']);
-            $PAGE->set_context($context);
-            require_login($course, true);
         }
+    }
+
+    $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+    $context = context_course::instance($courseid);
+    $PAGE->set_context($context);
+    require_login($course, true);
+
+    // Not quite unique, but better than 99999 for old embeds. 
+    if(empty($resourcelinkid)) {
+        $pageurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
+        $resourcelinkid = sha1(
+                $pageurl->out(false) . '&' . $course->id
+                    . '&' . $course->startdate
+            );
     }
 
     $contenturl = urldecode(optional_param('contenturl', '', PARAM_URL));
@@ -69,7 +80,7 @@ function init_panoptocourseembed_view() {
     $lti = new stdClass();
 
     // Give it some random id, this is not used in the code but will create a PHP notice if not provided.
-    $lti->id = 99999;
+    $lti->id = $resourcelinkid;
     $lti->typeid = $toolid;
     $lti->launchcontainer = LTI_LAUNCH_CONTAINER_WINDOW;
     $lti->toolurl = $contenturl;
