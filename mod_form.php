@@ -96,7 +96,11 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
             'ltilaunchurl' => $url->out(false),
             'height' => PANOPTO_PANEL_HEIGHT,
             'width' => PANOPTO_PANEL_WIDTH,
-            'courseid' => $COURSE->id
+            'courseid' => $COURSE->id,
+            'resourcebase' => sha1(
+                $PAGE->url->__toString() . '&' . $COURSE->id
+                    . '&' . $COURSE->startdate
+            )
         );
 
         $PAGE->requires->yui_module('moodle-mod_panoptocourseembed-contentselectionpanel', 'M.mod_panoptocourseembed.initcontentselectionpanel', array($params), null, true);
