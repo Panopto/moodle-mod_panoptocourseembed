@@ -24,8 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020061541;       // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2020060900;    // Requires this Moodle version
-$plugin->component = 'mod_panoptocourseembed'; // Full name of the plugin (used for diagnostics)
+// The current module version (Date: YYYYMMDDXX).
+$plugin->version   = 2022070700;
+
+// Requires this Moodle version.
+$plugin->requires  = 2020060900;
+
+// Full name of the plugin (used for diagnostics)   
+$plugin->component = 'mod_panoptocourseembed';
 $plugin->cron      = 0;
-$plugin->maturity = MATURITY_BETA;
+$plugin->maturity  = MATURITY_BETA;
