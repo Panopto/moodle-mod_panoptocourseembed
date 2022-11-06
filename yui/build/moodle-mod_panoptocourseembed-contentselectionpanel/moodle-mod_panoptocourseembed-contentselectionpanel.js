@@ -95,7 +95,8 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
                        ' style="width:100%;' +
                                ' height:100%;' + 
                                ' min-width:'+ width + 'px;' +
-                               ' min-height:' + height + 'px;">' +
+                               ' min-height:' + height + 'px;"' +
+                               ' allowfullscreen="true">'
                     '</iframe><br /></p>';
         
         Y.one('input[name=intro]').setAttribute('value', newIntro);
@@ -124,8 +125,9 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
 
         newIntro = '<p><h1>' + closeEvent.detail.title + '</h1>' +
                      '<iframe src="' + newContentSource.toString() + '"' +
+                          ' allowfullscreen="true"' + 
                           ' width="' + closeEvent.detail.width + '"' +
-                         ' height="' + closeEvent.detail.height + '"></iframe><br></p>';
+                          ' height="' + closeEvent.detail.height + '"></iframe><br></p>';
 
         Y.one('input[name=intro]').setAttribute('value', newIntro);
         Y.one('#panopto-intro-preview').setContent(newIntro);
