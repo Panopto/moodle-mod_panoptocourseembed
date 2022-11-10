@@ -25,17 +25,17 @@ class panoptocourseembed_lti_utility {
 
     /**
      * Get the id of the pre-configured LTI tool that matched the Panopto server a course is provisioned to.
-     *  If multiple LTI tools are configured to a single server this will get the first one. 
+     *  If multiple LTI tools are configured to a single server this will get the first one.
      *
      * @param int $courseid - the id of the course we are targetting in moodle.
-     * @return int the id of the first matching tool 
-     */ 
+     * @return int the id of the first matching tool
+     */
     public static function get_course_tool_id($courseid) {
         global $DB;
         require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/mod/lti/locallib.php');
-        
+
         $ltitooltypes = $DB->get_records('lti_types', null, 'name');
-        
+
         $targetservername = null;
 
         $blockexists = $DB->get_record('block', array('name' => 'panopto'), 'name');
@@ -48,7 +48,7 @@ class panoptocourseembed_lti_utility {
             $targetservername = get_config('mod_panoptocourseembed', 'default_panopto_server');
         }
 
-        $tooltypes = [];
+        $idmatches = [];
         foreach ($ltitooltypes as $type) {
             $type->config = lti_get_config(
                 (object)[
@@ -56,31 +56,41 @@ class panoptocourseembed_lti_utility {
                 ]
             );
 
-            if (!empty($targetservername) && strpos($type->config['toolurl'], $targetservername) !== false && 
+            $config = lti_get_type_type_config($type->id);
+            $islti1p3 = $config->lti_ltiversion === LTI_VERSION_1P3;
+
+            if (!empty($targetservername) && strpos($type->config['toolurl'], $targetservername) !== false &&
                 $type->state == LTI_TOOL_STATE_CONFIGURED) {
                 $currentconfig = lti_get_type_config($type->id);
 
-                if(!empty($currentconfig['customparameters']) && 
+                if(!empty($currentconfig['customparameters']) &&
                     strpos($currentconfig['customparameters'], 'panopto_course_embed_tool') !== false) {
-                    return $type->id;
+                    // Append matches, so we can filter later.
+                    $idmatches[] = ['id' => $type->id, 'islti1p3' => $islti1p3];
                 }
             }
         }
 
-        return null;
+        foreach ($idmatches as $item) {
+            if ($item['islti1p3'] == 1) {
+                return $item['id'];
+            }
+        }
+
+        return !empty($idmatches[0]['id']) ? $idmatches[0]['id'] : null;
     }
 
     /**
      * Get the tool url of the pre-configured LTI tool that matched the Panopto server a course is provisioned to.
-     *  If multiple LTI tools are configured to a single server this will get the first one. 
+     *  If multiple LTI tools are configured to a single server this will get the first one.
      *
      * @param int $courseid - the id of the course we are targetting in moodle.
-     * @return string the tool url of the first matching tool 
-     */ 
+     * @return string the tool url of the first matching tool
+     */
     public static function get_course_tool_url($courseid) {
         global $DB;
         require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/mod/lti/locallib.php');
-        
+
         $ltitooltypes = $DB->get_records('lti_types', null, 'name');
 
         $targetservername = null;
@@ -103,11 +113,11 @@ class panoptocourseembed_lti_utility {
                 ]
             );
 
-            if (!empty($targetservername) && stripos($type->config['toolurl'], $targetservername) !== false && 
+            if (!empty($targetservername) && stripos($type->config['toolurl'], $targetservername) !== false &&
                 $type->state == LTI_TOOL_STATE_CONFIGURED) {
                 $currentconfig = lti_get_type_config($type->id);
 
-                if(!empty($currentconfig['customparameters']) && 
+                if(!empty($currentconfig['customparameters']) &&
                     strpos($currentconfig['customparameters'], 'panopto_course_embed_tool') !== false) {
                     return $type->config['toolurl'];
                 }
@@ -116,6 +126,7 @@ class panoptocourseembed_lti_utility {
 
         return null;
     }
+
     /**
      * Launch an external tool activity.
      *
@@ -140,13 +151,13 @@ class panoptocourseembed_lti_utility {
      * @return array the endpoint URL and parameters (including the signature)
      * @since  Moodle 3.0
      */
-    private static function get_launch_data($instance, $nonce = '') {
+    public static function get_launch_data($instance, $nonce = '') {
         global $PAGE, $CFG, $USER;
 
         if (empty($CFG)) {
             require_once(dirname(__FILE__) . '/../../../../../config.php');
         }
-        
+
         require_once($CFG->dirroot . '/mod/lti/lib.php');
         require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
@@ -193,7 +204,7 @@ class panoptocourseembed_lti_utility {
         }
 
         // Setup LTI 1.3 specific parameters.
-        $lti1p3params = new \stdClass();
+        $lti1p3params = new stdClass();
         $ltiversion1p3 = defined('LTI_VERSION_1P3') && ($ltiversion === LTI_VERSION_1P3);
 
         if (isset($tool->toolproxyid)) {
@@ -202,16 +213,16 @@ class panoptocourseembed_lti_utility {
             $secret = $toolproxy->secret;
 
             if ($ltiversion1p3) {
-                if (!empty($toolproxy->public_keyset_url)) {
-                    $lti1p3params->lti_publickeyset = $toolproxy->public_keyset_url;
+                if (!empty($toolproxy->publickeyset)) {
+                    $lti1p3params->lti_publickeyset = $toolproxy->publickeyset;
                 }
-                $lti1p3params->lti_keytype = LTI_JWK_KEYSET;
-            
-                if (!empty($toolproxy->launch_url)) {
-                    $lti1p3params->lti_initiatelogin = $toolproxy->launch_url;
+                $lti1p3params->lti_keytype = JWK_KEYSET;
+
+                if (!empty($toolproxy->initiatelogin)) {
+                    $lti1p3params->lti_initiatelogin = $toolproxy->initiatelogin;
                 }
-                if (!empty($toolproxy->redirection_uris)) {
-                    $lti1p3params->lti_redirectionuris = $toolproxy->redirection_uris;
+                if (!empty($toolproxy->redirectionuris)) {
+                    $lti1p3params->lti_redirectionuris = $toolproxy->redirectionuris;
                 }
             }
         } else {
@@ -220,16 +231,17 @@ class panoptocourseembed_lti_utility {
                 $key = $instance->resourcekey;
             } else if ($ltiversion1p3) {
                 $key = $tool->clientid;
-                if (!empty($instance->public_keyset_url)) {
-                    $lti1p3params->lti_publickeyset = $instance->public_keyset_url;
+                $lti1p3params->clientid = $clientid;
+                if (!empty($typeconfig['publickeyset'])) {
+                    $lti1p3params->lti_publickeyset = $typeconfig['publickeyset'];
                 }
-                $lti1p3params->lti_keytype = LTI_JWK_KEYSET;
-            
-                if (!empty($instance->launch_url)) {
-                    $lti1p3params->lti_initiatelogin = $instance->launch_url;
+                $lti1p3params->lti_keytype = $typeconfig['keytype'] ?? JWK_KEYSET;
+
+                if (!empty($typeconfig['initiatelogin'])) {
+                    $lti1p3params->lti_initiatelogin = $typeconfig['initiatelogin'];
                 }
-                if (!empty($instance->redirection_uris)) {
-                    $lti1p3params->lti_redirectionuris = $instance->redirection_uris;
+                if (!empty($typeconfig['redirectionuris'])) {
+                    $lti1p3params->lti_redirectionuris = $typeconfig['redirectionuris'];
                 }
             } else if (!empty($typeconfig['resourcekey'])) {
                 $key = $typeconfig['resourcekey'];
@@ -368,7 +380,7 @@ class panoptocourseembed_lti_utility {
 
         if ((!empty($key) && !empty($secret)) || $ltiversion1p3) {
 
-            // lti_sign_jwt was not added until 3.7 so we need to support the original style of processing this. 
+            // lti_sign_jwt was not added until 3.7 so we need to support the original style of processing this.
             if (defined('LTI_VERSION_1P3') && function_exists('lti_sign_jwt')) {
                 if ($ltiversion !== LTI_VERSION_1P3) {
                     $params = lti_sign_parameters($requestparams, $endpoint, 'POST', $key, $secret);
@@ -400,8 +412,12 @@ class panoptocourseembed_lti_utility {
         return array($endpoint, $params);
     }
 
+    /**
+     * Check in order to verify active user is enrolled.
+     * @param  $targetcontext  Target Context
+     */
     public static function is_active_user_enrolled($targetcontext) {
-        global $USER; 
+        global $USER;
 
         return is_enrolled($targetcontext, $USER, 'mod/assignment:submit');
     }

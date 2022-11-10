@@ -22,11 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Initialize Panopto course embed view.
+ */
 function init_panoptocourseembed_view() {
-    global $CFG;
-    if (empty($CFG)) {
-        require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-    }
+    require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
     require_once(dirname(__FILE__) . '/lib/panoptocourseembed_lti_utility.php');
     require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/lib.php');
     require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/locallib.php');
@@ -38,7 +38,7 @@ function init_panoptocourseembed_view() {
     if (!empty($_SERVER['HTTP_REFERER']) && (strpos($_SERVER['HTTP_REFERER'], "/course/view.php") !== false)) {
         $components = parse_url($_SERVER['HTTP_REFERER']);
         parse_str($components['query'], $results);
-        
+
         if (!empty($results['id'])) {
             $courseid = $results['id'];
         }
@@ -49,8 +49,8 @@ function init_panoptocourseembed_view() {
     $PAGE->set_context($context);
     require_login($course, true);
 
-    // Not quite unique, but better than 99999 for old embeds. 
-    if(empty($resourcelinkid)) {
+    // Not quite unique, but better than 99999 for old embeds.
+    if (empty($resourcelinkid)) {
         $pageurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
         $resourcelinkid = sha1(
                 $pageurl->out(false) . '&' . $course->id
@@ -68,10 +68,10 @@ function init_panoptocourseembed_view() {
     require_login($course);
     require_capability('mod/lti:view', $context);
 
-    // Get a matching LTI tool for the course. 
+    // Get a matching LTI tool for the course.
     $toolid = \panoptocourseembed_lti_utility::get_course_tool_id($courseid);
 
-    // If no lti tool exists then we can not continue. 
+    // If no lti tool exists then we can not continue.
     if (is_null($toolid)) {
         print_error('no_existing_lti_tools', 'panoptocourseembed');
         return;
@@ -88,15 +88,30 @@ function init_panoptocourseembed_view() {
     $lti->instructorcustomparameters = [];
     $lti->debuglaunch = false;
     $lti->course = $courseid;
-    
+
     if ($customdata) {
         $decoded = json_decode($customdata, true);
-        
+
         foreach ($decoded as $key => $value) {
             $lti->custom->$key = $value;
         }
     }
-    
+
+    // LTI 1.3 login request.
+    $config = lti_get_type_type_config($toolid);
+    if ($config->lti_ltiversion === LTI_VERSION_1P3) {
+        if (!isset($SESSION->lti_initiatelogin_status)) {
+            echo lti_initiate_login($courseid,
+                "mod_panoptocourseembed,'',{$toolid},{$resourcelinkid},{$contenturl},{$customdata}",
+                $lti,
+                $config
+            );
+            exit;
+        } else {
+            unset($SESSION->lti_initiatelogin_status);
+        }
+    }
+
     echo \panoptocourseembed_lti_utility::launch_tool($lti);
 }
 

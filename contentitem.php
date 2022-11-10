@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * LTI launch script for the Panopto Course Embed module. 
+ * LTI launch script for the Panopto Course Embed module.
  *
  * @package mod_panoptocourseembed
  * @copyright  Panopto 2021
@@ -35,10 +35,21 @@ require_login($course);
 
 $toolid = \panoptocourseembed_lti_utility::get_course_tool_id($courseid);
 
-// If no lti tool exists then we can not continue. 
+// If no lti tool exists then we can not continue.
 if (is_null($toolid)) {
     print_error('no_existing_lti_tools', 'panoptocourseembed');
     return;
+}
+
+// LTI 1.3 login request.
+$config = lti_get_type_type_config($toolid);
+if ($config->lti_ltiversion === LTI_VERSION_1P3) {
+    if (!isset($SESSION->lti_initiatelogin_status)) {
+        echo lti_initiate_login($courseid, "mod_panoptocourseembed", null, $config);
+        exit;
+    } else {
+        unset($SESSION->lti_initiatelogin_status);
+    }
 }
 
 // Set the return URL. We send the launch container along to help us avoid

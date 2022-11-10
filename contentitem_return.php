@@ -25,16 +25,36 @@
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib/panoptocourseembed_lti_utility.php');
-
+require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/lib.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/locallib.php');
 
 $courseid = required_param('course', PARAM_INT);
-$contentitemsraw = required_param('content_items', PARAM_RAW_TRIMMED);
 
 require_login($courseid);
 
 $context = context_course::instance($courseid);
 
-$contentitems = json_decode($contentitemsraw);
+$items = '';
+
+if (!empty($jwt)) {
+    $params = lti_convert_from_jwt($id, $jwt);
+    $consumerkey = $params['oauth_consumer_key'] ?? '';
+    $messagetype = $params['lti_message_type'] ?? '';
+    $version = $params['lti_version'] ?? '';
+    $items = $params['content_items'] ?? '';
+    $errormsg = $params['lti_errormsg'] ?? '';
+    $msg = $params['lti_msg'] ?? '';
+} else {
+    $consumerkey = required_param('oauth_consumer_key', PARAM_RAW);
+    $messagetype = required_param('lti_message_type', PARAM_TEXT);
+    $version = required_param('lti_version', PARAM_TEXT);
+    $items = optional_param('content_items', '', PARAM_RAW_TRIMMED);
+    $errormsg = optional_param('lti_errormsg', '', PARAM_TEXT);
+    $msg = optional_param('lti_msg', '', PARAM_TEXT);
+    lti_verify_oauth_signature($id, $consumerkey);
+}
+
+$contentitems = json_decode($items);
 
 $errors = [];
 
@@ -55,7 +75,7 @@ if (!empty($contentitems->{'@graph'}[0]->placementAdvice->displayHeight)) {
 
 $customdata = $contentitems->{'@graph'}[0]->custom;
 
-// In this version of Moodle LTI contentitem request we do not want the interactive viewer. 
+// In this version of Moodle LTI contentitem request we do not want the interactive viewer.
 unset($customdata->use_panopto_interactive_view);
 
 $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
@@ -65,7 +85,7 @@ $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
     <?php if (count($errors) > 0): ?>
         parent.document.CALLBACKS.handleError(<?php echo json_encode($errors); ?>);
     <?php else: ?>
-        // This event should close the panopto popup and pass the new content url to the existing iframe. 
+        // This event should close the panopto popup and pass the new content url to the existing iframe.
         var sessionSelectedEvent;
         var detailObject = {
             'detail': {
@@ -78,10 +98,9 @@ $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
             }
         };
 
-        if(typeof window.CustomEvent === 'function') {
+        if (typeof window.CustomEvent === 'function') {
             sessionSelectedEvent = new CustomEvent('sessionSelected', detailObject);
-        }
-        else {
+        } else {
             // ie >= 9
             sessionSelectedEvent = document.createEvent('CustomEvent');
             sessionSelectedEvent.initCustomEvent('sessionSelected', false, false, detailObject);
