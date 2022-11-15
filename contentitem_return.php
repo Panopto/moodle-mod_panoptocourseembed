@@ -24,11 +24,13 @@
  */
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-require_once(dirname(__FILE__) . '/lib/panoptocourseembed_lti_utility.php');
+require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
 require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/lib.php');
 require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/locallib.php');
 
 $courseid = required_param('course', PARAM_INT);
+$id       = required_param('id', PARAM_INT);
+$jwt      = optional_param('JWT', '', PARAM_RAW);
 
 require_login($courseid);
 
