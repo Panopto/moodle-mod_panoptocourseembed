@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once ($CFG->dirroot.'/course/moodleform_mod.php');
-require_once(dirname(__FILE__) . '/lib/panoptocourseembed_lti_utility.php');
+require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
 
 class mod_panoptocourseembed_mod_form extends moodleform_mod {
 
@@ -38,7 +38,7 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
 
         $PAGE->force_settings_menu();
 
-        $toolurl = \panoptocourseembed_lti_utility::get_course_tool_url($COURSE->id);
+        $toolurl = \panoptoblock_lti_utility::get_course_tool_url($COURSE->id, 'panopto_course_embed_tool');
 
         // If no lti tool exists then we can not continue. 
         if (is_null($toolurl)) {
