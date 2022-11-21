@@ -40,12 +40,12 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
      */
     init : function(params) {
         // Check to make sure parameters are initialized
-        if ('0' === params.folderviewbtnid || 
-            '0' === params.selectvidbtnid || 
-            '0' === params.lticimlaunchurl|| 
+        if ('0' === params.folderviewbtnid ||
+            '0' === params.selectvidbtnid ||
+            '0' === params.lticimlaunchurl||
             '0' === params.ltilaunchurl ||
-             0  === params.courseid || 
-             0  === params.height || 
+             0  === params.courseid ||
+             0  === params.height ||
              0  === params.width) {
             return;
         }
@@ -91,12 +91,12 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         var newContentSource = new URL(url),
         newIntro = '<p><iframe src="' + newContentSource.toString() + '"' +
                        ' style="width:100%;' +
-                               ' height:100%;' + 
+                               ' height:100%;' +
                                ' min-width:'+ width + 'px;' +
                                ' min-height:' + height + 'px;"' +
-                               ' allowfullscreen="true">'
+                               ' allowfullscreen="true">' +
                     '</iframe><br /></p>';
-        
+
         Y.one('input[name=intro]').setAttribute('value', newIntro);
         Y.one('#panopto-intro-preview').setContent(newIntro);
 
@@ -123,7 +123,7 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
 
         newIntro = '<p><h1>' + closeEvent.detail.title + '</h1>' +
                      '<iframe src="' + newContentSource.toString() + '"' +
-                          ' allowfullscreen="true"' + 
+                          ' allowfullscreen="true"' +
                           ' width="' + closeEvent.detail.width + '"' +
                           ' height="' + closeEvent.detail.height + '"></iframe><br></p>';
 
