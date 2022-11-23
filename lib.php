@@ -65,14 +65,20 @@ function panoptocourseembed_add_instance($panoptocourseembed) {
  *
  * @global object
  * @param object $panoptocourseembed
+ * @param object $mform
  * @return bool
  */
-function panoptocourseembed_update_instance($panoptocourseembed) {
+function panoptocourseembed_update_instance($panoptocourseembed, $mform) {
     global $DB;
 
     $panoptocourseembed->name = get_panoptocourseembed_name($panoptocourseembed);
     $panoptocourseembed->timemodified = time();
     $panoptocourseembed->id = $panoptocourseembed->instance;
+
+    if ($mform) {
+        $data = $mform->get_data();
+        $panoptocourseembed->intro = $data->intro;
+    }
 
     $completiontimeexpected = !empty($panoptocourseembed->completionexpected) ? $panoptocourseembed->completionexpected : null;
     \core_completion\api::update_completion_date_event($panoptocourseembed->coursemodule, 'panoptocourseembed', $panoptocourseembed->id, $completiontimeexpected);
