@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * LTI launch script for the Panopto Course Embed module. 
+ * LTI launch script for the Panopto Course Embed module.
  *
  * @package mod_panoptocourseembed
  * @copyright  Panopto 2021
@@ -25,7 +25,7 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/lib.php');
 require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/locallib.php');
-require_once(dirname(__FILE__) . '/lib/panoptocourseembed_lti_utility.php');
+require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
 
 $courseid = required_param('courseid', PARAM_INT);
 
@@ -33,12 +33,23 @@ $courseid = required_param('courseid', PARAM_INT);
 $course = get_course($courseid);
 require_login($course);
 
-$toolid = \panoptocourseembed_lti_utility::get_course_tool_id($courseid);
+$toolid = \panoptoblock_lti_utility::get_course_tool_id($courseid, 'panopto_course_embed_tool');
 
-// If no lti tool exists then we can not continue. 
+// If no lti tool exists then we can not continue.
 if (is_null($toolid)) {
     print_error('no_existing_lti_tools', 'panoptocourseembed');
     return;
+}
+
+// LTI 1.3 login request.
+$config = lti_get_type_type_config($toolid);
+if ($config->lti_ltiversion === LTI_VERSION_1P3) {
+    if (!isset($SESSION->lti_initiatelogin_status)) {
+        echo lti_initiate_login($courseid, "mod_panoptocourseembed", null, $config);
+        exit;
+    } else {
+        unset($SESSION->lti_initiatelogin_status);
+    }
 }
 
 // Set the return URL. We send the launch container along to help us avoid
