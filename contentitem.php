@@ -29,6 +29,11 @@ require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.p
 
 $courseid = required_param('courseid', PARAM_INT);
 
+/**
+ * Course Embed path.
+ */
+const COURSE_EMBED_PATH = '/mod/panoptocourseembed/contentitem_return.php';
+
 // Check access and capabilities.
 $course = get_course($courseid);
 require_login($course);
@@ -42,10 +47,25 @@ if (is_null($toolid)) {
 }
 
 // LTI 1.3 login request.
+$isthismoodle41 = empty($CFG->version) ? false : $CFG->version >= 2022112800.00;
 $config = lti_get_type_type_config($toolid);
+
 if ($config->lti_ltiversion === LTI_VERSION_1P3) {
+    $lti = null;
+    if ($isthismoodle41) {
+        // Moodle 4.1 needs LTI object.
+        $lti = new stdClass();
+
+        // Give it some random id, this is not used in the code but will create a PHP notice if not provided.
+        $ltiviewerurl = new moodle_url(COURSE_EMBED_PATH);
+        $resourcelinkid = sha1($ltiviewerurl->out(false) .
+            '&' . $courseid .
+            '&' . $course->timecreated
+        );
+        $lti->id = $resourcelinkid;
+    }
     if (!isset($SESSION->lti_initiatelogin_status)) {
-        echo lti_initiate_login($courseid, "mod_panoptocourseembed", null, $config);
+        echo lti_initiate_login($courseid, "mod_panoptocourseembed", $lti, $config);
         exit;
     } else {
         unset($SESSION->lti_initiatelogin_status);
@@ -59,7 +79,7 @@ $returnurlparams = [
     'id' => $toolid,
     'sesskey' => sesskey()
 ];
-$returnurl = new \moodle_url('/mod/panoptocourseembed/contentitem_return.php', $returnurlparams);
+$returnurl = new \moodle_url(COURSE_EMBED_PATH, $returnurlparams);
 
 // Prepare the request.
 $request = lti_build_content_item_selection_request(
