@@ -22,13 +22,16 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();/**
+defined('MOODLE_INTERNAL') || die();
+
+/**
  * This class renders the course embed pages.
  */
 class mod_panoptocourseembed_renderer extends plugin_renderer_base {
     /**
      * This function returns HTML markup to render the content selection buttons.
-     * @param object $cm A course module object.
+     *
+     * @param string $previewintro Preview intro.
      * @return string Returns HTML markup.
      */
     public function get_content_selection_buttons($previewintro = '') {

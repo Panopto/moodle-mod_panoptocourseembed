@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Defines backup_panoptocourseembed_stepslib class.
  *
  * @package mod_panoptocourseembed
  * @category backup
@@ -24,7 +24,7 @@
  */
 
 /**
- * Define all the backup steps that will be used by the backup_panoptocourseembed_activity_task
+ * Define all the backup steps that will be used by the backup_panoptocourseembed_stepslib
  */
 
 /**
@@ -32,28 +32,31 @@
  */
 class backup_panoptocourseembed_activity_structure_step extends backup_activity_structure_step {
 
+    /**
+     * Define standard activity structure.
+     */
     protected function define_structure() {
 
-        // To know if we are including userinfo
+        // To know if we are including userinfo.
         $userinfo = $this->get_setting_value('userinfo');
 
-        // Define each element separated
+        // Define each element separated.
         $panoptocourseembed = new backup_nested_element('panoptocourseembed', array('id'), array(
             'name', 'intro', 'introformat', 'timemodified'));
 
-        // Build the tree
-        // (love this)
+        // Build the tree.
+        // (love this).
 
-        // Define sources
+        // Define sources.
         $panoptocourseembed->set_source_table('panoptocourseembed', array('id' => backup::VAR_ACTIVITYID));
 
-        // Define id annotations
-        // (none)
+        // Define id annotations.
+        // (none).
 
-        // Define file annotations
-        $panoptocourseembed->annotate_files('mod_panoptocourseembed', 'intro', null); // This file area hasn't itemid
+        // Define file annotations.
+        $panoptocourseembed->annotate_files('mod_panoptocourseembed', 'intro', null); // This file area hasn't itemid.
 
-        // Return the root element (panoptocourseembed), wrapped into standard activity structure
+        // Return the root element (panoptocourseembed), wrapped into standard activity structure.
         return $this->prepare_activity_structure($panoptocourseembed);
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,13 +25,15 @@
 defined('MOODLE_INTERNAL') || die;
 
 /**
+ * Get activity name
+ *
  * @param object $panoptocourseembed
  * @return string
  */
 function get_panoptocourseembed_name($panoptocourseembed) {
     // TODO: Set the name of the panoptocourseembed to the title of the session by storing the session in the intro?
 
-    return get_string('modulename','panoptocourseembed');
+    return get_string('modulename', 'panoptocourseembed');
 }
 /**
  * Given an object containing all the necessary data,
@@ -40,7 +41,6 @@ function get_panoptocourseembed_name($panoptocourseembed) {
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @global object
  * @param object $panoptocourseembed
  * @return bool|int
  */
@@ -53,7 +53,8 @@ function panoptocourseembed_add_instance($panoptocourseembed) {
     $id = $DB->insert_record("panoptocourseembed", $panoptocourseembed);
 
     $completiontimeexpected = !empty($panoptocourseembed->completionexpected) ? $panoptocourseembed->completionexpected : null;
-    \core_completion\api::update_completion_date_event($panoptocourseembed->coursemodule, 'panoptocourseembed', $id, $completiontimeexpected);
+    \core_completion\api::update_completion_date_event(
+        $panoptocourseembed->coursemodule, 'panoptocourseembed', $id, $completiontimeexpected);
 
     return $id;
 }
@@ -63,7 +64,6 @@ function panoptocourseembed_add_instance($panoptocourseembed) {
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @global object
  * @param object $panoptocourseembed
  * @param object $mform
  * @return bool
@@ -81,7 +81,8 @@ function panoptocourseembed_update_instance($panoptocourseembed, $mform) {
     }
 
     $completiontimeexpected = !empty($panoptocourseembed->completionexpected) ? $panoptocourseembed->completionexpected : null;
-    \core_completion\api::update_completion_date_event($panoptocourseembed->coursemodule, 'panoptocourseembed', $panoptocourseembed->id, $completiontimeexpected);
+    \core_completion\api::update_completion_date_event(
+        $panoptocourseembed->coursemodule, 'panoptocourseembed', $panoptocourseembed->id, $completiontimeexpected);
 
     return $DB->update_record("panoptocourseembed", $panoptocourseembed);
 }
@@ -91,14 +92,13 @@ function panoptocourseembed_update_instance($panoptocourseembed, $mform) {
  * this function will permanently delete the instance
  * and any data that depends on it.
  *
- * @global object
  * @param int $id
  * @return bool
  */
 function panoptocourseembed_delete_instance($id) {
     global $DB;
 
-    if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", array("id"=>$id))) {
+    if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", array("id" => $id))) {
         return false;
     }
 
@@ -120,21 +120,21 @@ function panoptocourseembed_delete_instance($id) {
  * this activity in a course listing.
  * See get_array_of_activities() in course/lib.php
  *
- * @global object
  * @param object $coursemodule
  * @return cached_cm_info|null
  */
 function panoptocourseembed_get_coursemodule_info($coursemodule) {
     global $DB;
 
-    if ($panoptocourseembed = $DB->get_record('panoptocourseembed', array('id'=>$coursemodule->instance), 'id, name, intro, introformat')) {
+    if ($panoptocourseembed = $DB->get_record('panoptocourseembed',
+        array('id' => $coursemodule->instance), 'id, name, intro, introformat')) {
         if (empty($panoptocourseembed->name)) {
-            // panoptocourseembed name missing, fix it
+            // Panoptocourseembed name missing, fix it.
             $panoptocourseembed->name = "panoptocourseembed{$panoptocourseembed->id}";
             $DB->set_field('panoptocourseembed', 'name', $panoptocourseembed->name, array('id' => $panoptocourseembed->id));
         }
         $info = new cached_cm_info();
-        // no filtering hre because this info is cached and filtered later
+        // No filtering hre because this info is cached and filtered later.
         $info->content = format_module_intro('panoptocourseembed', $panoptocourseembed, $coursemodule->id, false);
         $info->name  = $panoptocourseembed->name;
         return $info;
@@ -158,6 +158,8 @@ function panoptocourseembed_reset_userdata($data) {
 }
 
 /**
+ * Features that this activity supports.
+ *
  * @uses FEATURE_IDNUMBER
  * @uses FEATURE_GROUPS
  * @uses FEATURE_GROUPINGS
@@ -170,18 +172,28 @@ function panoptocourseembed_reset_userdata($data) {
  */
 function panoptocourseembed_supports($feature) {
     switch($feature) {
-        case FEATURE_IDNUMBER:                return true;
-        case FEATURE_GROUPS:                  return false;
-        case FEATURE_GROUPINGS:               return false;
-        case FEATURE_MOD_INTRO:               return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS: return false;
-        case FEATURE_GRADE_HAS_GRADE:         return false;
-        case FEATURE_GRADE_OUTCOMES:          return false;
-        case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_RESOURCE;
-        case FEATURE_BACKUP_MOODLE2:          return true;
-        case FEATURE_NO_VIEW_LINK:            return true;
-
-        default: return null;
+        case FEATURE_IDNUMBER:
+            return true;
+        case FEATURE_GROUPS:
+            return false;
+        case FEATURE_GROUPINGS:
+            return false;
+        case FEATURE_MOD_INTRO:
+            return false;
+        case FEATURE_COMPLETION_TRACKS_VIEWS:
+            return false;
+        case FEATURE_GRADE_HAS_GRADE:
+            return false;
+        case FEATURE_GRADE_OUTCOMES:
+            return false;
+        case FEATURE_MOD_ARCHETYPE:
+            return MOD_ARCHETYPE_RESOURCE;
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
+        case FEATURE_NO_VIEW_LINK:
+            return true;
+        default:
+            return null;
     }
 }
 

@@ -25,6 +25,7 @@
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
+require_once($CFG->dirroot . '/blocks/panopto/lib/panopto_data.php');
 require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/lib.php');
 require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/locallib.php');
 
@@ -64,14 +65,35 @@ if (!is_object($contentitems) && !is_array($contentitems)) {
     $errors[] = 'invalidjson';
 }
 
+// Get and validate frame sizes.
 $framewidth = 720;
-if (!empty($contentitems->{'@graph'}[0]->placementAdvice->displayWidth)) {
-    $framewidth = $contentitems->{'@graph'}[0]->placementAdvice->displayWidth;
+$fwidth = $contentitems->{'@graph'}[0]->placementAdvice->displayWidth;
+if (!empty($fwidth)) {
+    $framewidth = is_numeric($fwidth) ? $fwidth : $framewidth;
 }
 
 $frameheight = 480;
-if (!empty($contentitems->{'@graph'}[0]->placementAdvice->displayHeight)) {
-    $frameheight = $contentitems->{'@graph'}[0]->placementAdvice->displayHeight;
+$fheight = $contentitems->{'@graph'}[0]->placementAdvice->displayHeight;
+if (!empty($fheight)) {
+    $frameheight = is_numeric($fheight) ? $fheight : $frameheight;
+}
+
+$title = "";
+$itemtitle = $contentitems->{'@graph'}[0]->title;
+if (!empty($itemtitle)) {
+    $invalid_characters = array("$", "%", "#", "<", ">");
+    $cleantitle = str_replace($invalid_characters, "", $itemtitle);
+    $title = is_string($cleantitle) ? $cleantitle : $title;
+}
+
+$url = "";
+$contenturl = $contentitems->{'@graph'}[0]->url;
+if (!empty($contenturl)) {
+    $panoptodata = new \panopto_data($courseid);
+    $baseurl = parse_url($contenturl, PHP_URL_HOST);
+    if (strcmp($panoptodata->servername, $baseurl) === 0) {
+        $url = $contenturl;
+    }
 }
 
 $customdata = $contentitems->{'@graph'}[0]->custom;
@@ -90,9 +112,9 @@ $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
         var sessionSelectedEvent;
         var detailObject = {
             'detail': {
-                'title': "<?php echo $contentitems->{'@graph'}[0]->title ?>",
+                'title': "<?php echo $title ?>",
                 'ltiViewerUrl': "<?php echo $ltiviewerurl->out(false) ?>",
-                'contentUrl': "<?php echo $contentitems->{'@graph'}[0]->url ?>",
+                'contentUrl': "<?php echo $url ?>",
                 'customData': "<?php echo urlencode(json_encode($customdata)) ?>",
                 'width': <?php echo $framewidth ?>,
                 'height': <?php echo $frameheight ?>,
