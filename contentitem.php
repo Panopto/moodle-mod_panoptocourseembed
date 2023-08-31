@@ -42,7 +42,7 @@ $toolid = \panoptoblock_lti_utility::get_course_tool_id($courseid, 'panopto_cour
 
 // If no lti tool exists then we can not continue.
 if (is_null($toolid)) {
-    print_error('no_existing_lti_tools', 'panoptocourseembed');
+    throw new moodle_exception('no_existing_lti_tools', 'panoptocourseembed');
     return;
 }
 

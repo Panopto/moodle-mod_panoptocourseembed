@@ -42,8 +42,12 @@
 // Please do not forget to use upgrade_set_timeout()
 // before any action that may take longer time to finish.
 
-defined('MOODLE_INTERNAL') || die;
-
+/**
+ * This is ran when the plugin is upgraded
+ *
+ * @param string $oldversion the version previously installed
+ * @return whether the upgrade was a success
+ */
 function xmldb_panoptocourseembed_upgrade($oldversion) {
     global $CFG;
 

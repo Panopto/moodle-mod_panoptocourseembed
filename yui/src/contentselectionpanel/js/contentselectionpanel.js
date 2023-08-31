@@ -55,7 +55,7 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         var selectvidbtn = Y.one('#' + params.selectvidbtnid),
            folderviewbtn = Y.one('#' + params.folderviewbtnid);
         selectvidbtn.on('click', this.open_panopto_window_callback, this, params.lticimlaunchurl, params.height, params.width);
-        folderviewbtn.on('click', this.panopto_folder_view_callback, this, params.ltilaunchurl, 600, 800);
+        folderviewbtn.on('click', this.panopto_folder_view_callback, this, params.ltilaunchurl, 600, 400);
 
         this._createResourceLinkId = (function (base) {
             return function () {
@@ -121,11 +121,10 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         // change the search property of the main url
         newContentSource.search = search_params.toString();
 
-        newIntro = '<p><h1>' + closeEvent.detail.title + '</h1>' +
-                     '<iframe src="' + newContentSource.toString() + '"' +
-                          ' allowfullscreen="true"' +
-                          ' width="' + closeEvent.detail.width + '"' +
-                          ' height="' + closeEvent.detail.height + '"></iframe><br></p>';
+        newIntro = '<p><iframe src="' + newContentSource.toString() + '"' +
+                        ' allowfullscreen="true"' +
+                        ' width="' + closeEvent.detail.width + '"' +
+                        ' height="' + closeEvent.detail.height + '"></iframe><br></p>';
 
         Y.one('input[name=intro]').setAttribute('value', newIntro);
         Y.one('#panopto-intro-preview').setContent(newIntro);
@@ -136,7 +135,6 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         Y.one('#id_select_video').removeClass('btn-primary');
         document.body.panoptoWindow.destroy();
     },
-
 },
 {
     NAME : 'moodle-mod_panoptocourseembed-contentselectionpanel',

@@ -24,8 +24,6 @@
 
 namespace mod_panoptocourseembed\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The mod_panoptocourseembed module does not store any data.
  *

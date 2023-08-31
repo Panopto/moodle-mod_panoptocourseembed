@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,12 +24,23 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
 
+/**
+ * This class contains the forms to create and edit an instance of this module
+ *
+ * @package mod_panoptocourseembed
+ * @copyright  Panopto 2021
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mod_panoptocourseembed_mod_form extends moodleform_mod {
 
-    function definition() {
+    /**
+     * Definition function for the form.
+     */
+    public function definition() {
         global $PAGE, $COURSE;
 
         define('PANOPTO_PANEL_WIDTH', 800);
@@ -40,9 +50,9 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
 
         $toolurl = \panoptoblock_lti_utility::get_course_tool_url($COURSE->id, 'panopto_course_embed_tool');
 
-        // If no lti tool exists then we can not continue. 
+        // If no lti tool exists then we can not continue.
         if (is_null($toolurl)) {
-            print_error('no_existing_lti_tools', 'panoptocourseembed');
+            throw new moodle_exception('no_existing_lti_tools', 'panoptocourseembed');
             return;
         }
 
@@ -50,12 +60,10 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
 
         $mform->addElement('header', 'generalhdr', get_string('general'));
 
-
         $cimurlparams = array(
             'courseid' => $COURSE->id,
         );
         $cimurl = new moodle_url('/mod/panoptocourseembed/contentitem.php', $cimurlparams);
-
 
         $urlparams = array(
             'course' => $COURSE->id,
@@ -63,7 +71,7 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
         );
         $url = new moodle_url('/mod/panoptocourseembed/view_content.php', $urlparams);
 
-        // default intro should be a folderview
+        // Default intro should be a folderview.
         $defaultintro = '<p><iframe src="' . $url . '" style="width:100%; height:100%; min-width:800px; min-height:600px;">' .
                 '</iframe><br /></p>';
         $mform->addElement('hidden', 'intro', $defaultintro);
@@ -78,13 +86,10 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
 
         $this->standard_coursemodule_elements();
 
-        //-------------------------------------------------------------------------------
-        // buttons
+        // Buttons.
         $this->add_action_buttons(true, false, null);
 
-
-        //-------------------------------------------------------------------------------
-        // YUI Modules
+        // YUI Modules.
         $urlparams = array(
             'courseid' => $COURSE->id,
         );
@@ -103,9 +108,12 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
             )
         );
 
-        $PAGE->requires->yui_module('moodle-mod_panoptocourseembed-contentselectionpanel', 'M.mod_panoptocourseembed.initcontentselectionpanel', array($params), null, true);
+        $PAGE->requires->yui_module(
+            'moodle-mod_panoptocourseembed-contentselectionpanel', 'M.mod_panoptocourseembed.initcontentselectionpanel',
+            array($params),
+            null,
+            true);
         $PAGE->requires->string_for_js('replacevideo', 'panoptocourseembed');
         $PAGE->requires->string_for_js('selectvideo', 'panoptocourseembed');
     }
-
 }

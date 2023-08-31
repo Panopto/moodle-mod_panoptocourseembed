@@ -23,9 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-
 /**
  * PHPUnit panoptocourseembed generator testcase
  *
@@ -49,9 +46,9 @@ class mod_panoptocourseembed_generator_testcase extends advanced_testcase {
         $this->assertInstanceOf('mod_panoptocourseembed_generator', $generator);
         $this->assertEquals('panoptocourseembed', $generator->get_modulename());
 
-        $generator->create_instance(array('course'=>$course->id));
-        $generator->create_instance(array('course'=>$course->id));
-        $panoptocourseembed = $generator->create_instance(array('course'=>$course->id));
+        $generator->create_instance(array('course' => $course->id));
+        $generator->create_instance(array('course' => $course->id));
+        $panoptocourseembed = $generator->create_instance(array('course' => $course->id));
         $this->assertEquals(3, $DB->count_records('panoptocourseembed'));
 
         $cm = get_coursemodule_from_instance('panoptocourseembed', $panoptocourseembed->id);

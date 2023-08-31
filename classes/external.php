@@ -92,8 +92,15 @@ class mod_panoptocourseembed_external extends external_api {
                 $panoptocourseembed->name = external_format_string($panoptocourseembed->name, $context->id);
                 $options = array('noclean' => true);
                 list($panoptocourseembed->intro, $panoptocourseembed->introformat) =
-                    external_format_text($panoptocourseembed->intro, $panoptocourseembed->introformat, $context->id, 'mod_panoptocourseembed', 'intro', null, $options);
-                $panoptocourseembed->introfiles = external_util::get_area_files($context->id, 'mod_panoptocourseembed', 'intro', false, false);
+                    external_format_text($panoptocourseembed->intro,
+                        $panoptocourseembed->introformat,
+                        $context->id,
+                        'mod_panoptocourseembed',
+                        'intro',
+                        null,
+                        $options);
+                $panoptocourseembed->introfiles =
+                    external_util::get_area_files($context->id, 'mod_panoptocourseembed', 'intro', false, false);
 
                 $returnedpanoptocourseembeds[] = $panoptocourseembed;
             }

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Define all the restore steps that will be used by the restore_panoptocourseembed_activity_structure_step
+ *
  * @package mod_panoptocourseembed
  * @subpackage backup-moodle2
  * @category backup
@@ -24,7 +25,7 @@
  */
 
 /**
- * Define all the restore steps that will be used by the restore_url_activity_task
+ * Define all the restore steps that will be used by the restore_panoptocourseembed_activity_structure_step
  */
 
 /**
@@ -32,15 +33,23 @@
  */
 class restore_panoptocourseembed_activity_structure_step extends restore_activity_structure_step {
 
+    /**
+     * Define standard activity structure.
+     */
     protected function define_structure() {
 
         $paths = array();
         $paths[] = new restore_path_element('panoptocourseembed', '/activity/panoptocourseembed');
 
-        // Return the paths wrapped into standard activity structure
+        // Return the paths wrapped into standard activity structure.
         return $this->prepare_activity_structure($paths);
     }
 
+    /**
+     * Process activity.
+     *
+     * @param object $data
+     */
     protected function process_panoptocourseembed($data) {
         global $DB;
 
@@ -51,15 +60,18 @@ class restore_panoptocourseembed_activity_structure_step extends restore_activit
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
 
-        // insert the panoptocourseembed record
+        // Insert the panoptocourseembed record.
         $newitemid = $DB->insert_record('panoptocourseembed', $data);
-        // immediately after inserting "activity" record, call this
+        // Immediately after inserting "activity" record, call this.
         $this->apply_activity_instance($newitemid);
     }
 
+    /**
+     * After execute.
+     *
+     */
     protected function after_execute() {
-        // Add panoptocourseembed related files, no need to match by itemname (just internally handled context)
+        // Add panoptocourseembed related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_panoptocourseembed', 'intro', null);
     }
-
 }

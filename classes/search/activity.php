@@ -24,8 +24,6 @@
 
 namespace mod_panoptocourseembed\search;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Search area for mod_panoptocourseembed activities.
  *
@@ -72,7 +70,5 @@ class activity extends \core_search\base_activity {
      */
     public function get_context_url(\core_search\document $doc) {
         return new \moodle_url('/course/view.php', array('id' => $doc->get('courseid')));
-
     }
-
 }

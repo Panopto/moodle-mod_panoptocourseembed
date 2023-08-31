@@ -23,9 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-
 /**
  * Panopto course embed module data generator class
  *
@@ -36,6 +33,12 @@ defined('MOODLE_INTERNAL') || die();
  */
 class mod_panoptocourseembed_generator extends testing_module_generator {
 
+    /**
+     * Definition function for create instance.
+     *
+     * @param array $record Record for the instance.
+     * @param array|null $options Options for the instance.
+     */
     public function create_instance($record = null, array $options = null) {
         $record = (array)$record;
         $record['showdescription'] = 1;
