@@ -37,4 +37,12 @@ if ($ADMIN->fulltree) {
             PARAM_TEXT
         )
     );
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'mod_panoptocourseembed/is_responsive',
+            get_string('is_responsive', 'mod_panoptocourseembed'),
+            get_string('is_responsive_desc', 'mod_panoptocourseembed'),
+            0
+        )
+    );
 }

@@ -25,10 +25,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 // The current module version (Date: YYYYMMDDXX).
-$plugin->version = 2023083100;
+$plugin->version = 2024012500;
 
-// Requires this Moodle version.
-$plugin->requires = 2020060900;
+// Requires this Moodle version 4.1.0
+$plugin->requires = 2022112800;
 
 // Full name of the plugin (used for diagnostics).
 $plugin->component = 'mod_panoptocourseembed';
@@ -36,7 +36,7 @@ $plugin->cron      = 0;
 $plugin->maturity  = MATURITY_BETA;
 
 // Dependencies.
-$plugin->dependencies = array(
+$plugin->dependencies = [
     'block_panopto' => 2022122000,
-    'mod_lti' => ANY_VERSION
-);
+    'mod_lti' => ANY_VERSION,
+];

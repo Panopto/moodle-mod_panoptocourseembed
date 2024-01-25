@@ -32,25 +32,30 @@ var PANOPTOCONTENTSELECTIONFRAME = function() {
 Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
 
     courseid: null,
+    isResponsive: false,
 
     /**
      * Init function for the checkboxselection module
      * @property params
      * @type {Object}
      */
-    init : function(params) {
+    init: function (params)
+    {
         // Check to make sure parameters are initialized
         if ('0' === params.folderviewbtnid ||
             '0' === params.selectvidbtnid ||
-            '0' === params.lticimlaunchurl||
+            '0' === params.lticimlaunchurl ||
             '0' === params.ltilaunchurl ||
-             0  === params.courseid ||
-             0  === params.height ||
-             0  === params.width) {
+            0 === params.courseid ||
+            0 === params.height ||
+            0 === params.width ||
+            0 === params.isresponsive)
+        {
             return;
         }
 
         this.courseid = params.courseid;
+        this.isResponsive = params.isresponsive;
 
         var selectvidbtn = Y.one('#' + params.selectvidbtnid),
            folderviewbtn = Y.one('#' + params.folderviewbtnid);
@@ -89,13 +94,22 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
 
     panopto_folder_view_callback: function(e, url, height, width) {// Update the iframe element attributes and sec to point to correct content.
         var newContentSource = new URL(url),
-        newIntro = '<p><iframe src="' + newContentSource.toString() + '"' +
-                       ' style="width:100%;' +
-                               ' height:100%;' +
-                               ' min-width:'+ width + 'px;' +
-                               ' min-height:' + height + 'px;"' +
-                               ' allowfullscreen="true">' +
-                    '</iframe><br /></p>';
+            newIntro;
+
+        if (this.isResponsive) {
+            newIntro = '<p><iframe src="' + newContentSource.toString() + '"' +
+                        ' style="width:100%;' +
+                                ' height:auto;' +
+                                ' aspect-ratio: ' + width + ' / ' + height + ';"' +
+                                ' allowfullscreen="true">' +
+                        '</iframe><br /></p>';
+        } else {
+            newIntro = '<p><iframe src="' + newContentSource.toString() + '"' +
+                        ' width="' + width + '"' +
+                        ' height="' + height + '"' +
+                        ' allowfullscreen="true">' +
+                        '</iframe><br /></p>';
+        }
 
         Y.one('input[name=intro]').setAttribute('value', newIntro);
         Y.one('#panopto-intro-preview').setContent(newIntro);
@@ -121,10 +135,19 @@ Y.extend(PANOPTOCONTENTSELECTIONFRAME, Y.Base, {
         // change the search property of the main url
         newContentSource.search = search_params.toString();
 
-        newIntro = '<p><iframe src="' + newContentSource.toString() + '"' +
-                        ' allowfullscreen="true"' +
-                        ' width="' + closeEvent.detail.width + '"' +
-                        ' height="' + closeEvent.detail.height + '"></iframe><br></p>';
+        if (this.isResponsive) {
+            newIntro = '<p><iframe src="' + newContentSource.toString() + '"' +
+                        ' style="width:100%;' +
+                                ' height:auto;' +
+                                ' aspect-ratio: ' + closeEvent.detail.width + ' / ' + closeEvent.detail.height + ';"' +
+                                ' allowfullscreen="true">' +
+                        '</iframe><br /></p>';
+        } else {
+            newIntro = '<p><iframe src="' + newContentSource.toString() + '"' +
+                            ' width="' + closeEvent.detail.width + '"' +
+                            ' height="' + closeEvent.detail.height + '"' +
+                            ' allowfullscreen="true"></iframe><br></p>';
+        }
 
         Y.one('input[name=intro]').setAttribute('value', newIntro);
         Y.one('#panopto-intro-preview').setContent(newIntro);
