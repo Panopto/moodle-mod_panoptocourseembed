@@ -60,15 +60,13 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
 
         $mform->addElement('header', 'generalhdr', get_string('general'));
 
-        $cimurlparams = array(
-            'courseid' => $COURSE->id,
-        );
+        $cimurlparams = [ 'courseid' => $COURSE->id, ];
         $cimurl = new moodle_url('/mod/panoptocourseembed/contentitem.php', $cimurlparams);
 
-        $urlparams = array(
+        $urlparams = [
             'course' => $COURSE->id,
             'contenturl' => $toolurl
-        );
+        ];
         $url = new moodle_url('/mod/panoptocourseembed/view_content.php', $urlparams);
 
         // Default intro should be a folderview.
@@ -90,11 +88,14 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
         $this->add_action_buttons(true, false, null);
 
         // YUI Modules.
-        $urlparams = array(
-            'courseid' => $COURSE->id,
-        );
+        $urlparams = [ 'courseid' => $COURSE->id, ];
 
-        $params = array(
+        $isresponsive = false;
+        if (get_config('mod_panoptocourseembed', 'is_responsive')) {
+            $isresponsive = true;
+        }
+
+        $params = [
             'selectvidbtnid' => 'id_select_video',
             'folderviewbtnid' => 'id_folder_view',
             'lticimlaunchurl' => $cimurl->out(false),
@@ -105,8 +106,9 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
             'resourcebase' => sha1(
                 $PAGE->url->__toString() . '&' . $COURSE->id
                     . '&' . $COURSE->startdate
-            )
-        );
+            ),
+            'isresponsive' => $isresponsive,
+        ];
 
         $PAGE->requires->yui_module(
             'moodle-mod_panoptocourseembed-contentselectionpanel', 'M.mod_panoptocourseembed.initcontentselectionpanel',

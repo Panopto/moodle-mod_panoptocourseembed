@@ -48,3 +48,5 @@ $string['replacevideo'] = 'Replace Video';
 $string['folderview'] = 'Embed Folder View';
 $string['default_panopto_server'] = 'Default Panopto Server';
 $string['default_panopto_server_desc'] = 'The FQDN of the Panopto server we will try to use in the case a course is not provisioned with Panopto via the block. E.g. demo.hosted.panopto.com';
+$string['is_responsive'] = 'Responsive folders and videos';
+$string['is_responsive_desc'] = 'If this setting is turned on, both folder and videos will be responsive on the page. This will affect only new embeds, after settings is turned on.';
