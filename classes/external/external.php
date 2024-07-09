@@ -22,6 +22,18 @@
  * @copyright  Panopto 2021
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace mod_panoptocourseembed\external;
+
+use context_module;
+use external_api;
+use external_function_parameters;
+use external_single_structure;
+use external_multiple_structure;
+use external_value;
+use external_warnings;
+use external_util;
+use external_files;
+use external_format_value;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -46,11 +58,11 @@ class mod_panoptocourseembed_external extends external_api {
      */
     public static function get_panoptocourseembeds_by_courses_parameters() {
         return new external_function_parameters (
-            array(
+            [
                 'courseids' => new external_multiple_structure(
-                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, array()
+                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, []
                 ),
-            )
+            ]
         );
     }
 
@@ -62,17 +74,15 @@ class mod_panoptocourseembed_external extends external_api {
      * @return array of warnings and panoptocourseembeds
      * @since Moodle 3.3
      */
-    public static function get_panoptocourseembeds_by_courses($courseids = array()) {
+    public static function get_panoptocourseembeds_by_courses($courseids = []) {
 
-        $warnings = array();
-        $returnedpanoptocourseembeds = array();
+        $warnings = [];
+        $returnedpanoptocourseembeds = [];
 
-        $params = array(
-            'courseids' => $courseids,
-        );
+        $params = ['courseids' => $courseids];
         $params = self::validate_parameters(self::get_panoptocourseembeds_by_courses_parameters(), $params);
 
-        $mycourses = array();
+        $mycourses = [];
         if (empty($params['courseids'])) {
             $mycourses = enrol_get_my_courses();
             $params['courseids'] = array_keys($mycourses);
@@ -90,7 +100,7 @@ class mod_panoptocourseembed_external extends external_api {
                 $context = context_module::instance($panoptocourseembed->coursemodule);
                 // Entry to return.
                 $panoptocourseembed->name = external_format_string($panoptocourseembed->name, $context->id);
-                $options = array('noclean' => true);
+                $options = ['noclean' => true];
                 list($panoptocourseembed->intro, $panoptocourseembed->introformat) =
                     external_format_text($panoptocourseembed->intro,
                         $panoptocourseembed->introformat,
@@ -106,10 +116,10 @@ class mod_panoptocourseembed_external extends external_api {
             }
         }
 
-        $result = array(
+        $result = [
             'panoptocourseembeds' => $returnedpanoptocourseembeds,
-            'warnings' => $warnings
-        );
+            'warnings' => $warnings,
+        ];
         return $result;
     }
 
@@ -121,27 +131,27 @@ class mod_panoptocourseembed_external extends external_api {
      */
     public static function get_panoptocourseembeds_by_courses_returns() {
         return new external_single_structure(
-            array(
+            [
                 'panoptocourseembeds' => new external_multiple_structure(
                     new external_single_structure(
-                        array(
+                        [
                             'id' => new external_value(PARAM_INT, 'Module id'),
                             'coursemodule' => new external_value(PARAM_INT, 'Course module id'),
                             'course' => new external_value(PARAM_INT, 'Course id'),
                             'name' => new external_value(PARAM_RAW, 'Panoptocourseembed name'),
                             'intro' => new external_value(PARAM_RAW, 'Panoptocourseembed contents'),
-                            'introformat' => new external_format_value('intro', 'Content format'),
+                            'introformat' => new external_format_value('intro'),
                             'introfiles' => new external_files('Files in the introduction text'),
                             'timemodified' => new external_value(PARAM_INT, 'Last time the panoptocourseembed was modified'),
                             'section' => new external_value(PARAM_INT, 'Course section id'),
                             'visible' => new external_value(PARAM_INT, 'Module visibility'),
                             'groupmode' => new external_value(PARAM_INT, 'Group mode'),
                             'groupingid' => new external_value(PARAM_INT, 'Grouping id'),
-                        )
+                        ]
                     )
                 ),
                 'warnings' => new external_warnings(),
-            )
+            ]
         );
     }
 }

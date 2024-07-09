@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_panoptocourseembed;
+
 /**
  * Unit tests for the activity panoptocourseembed's lib.
  *
@@ -30,20 +32,26 @@
  * @copyright  Panopto 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
+final class lib_test extends \advanced_testcase {
 
     /**
      * Set up.
      */
-    public function setUp() {
+    protected function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
         $this->setAdminUser();
     }
 
-    public function test_panoptocourseembed_core_calendar_provide_event_action() {
+    /**
+     * Test event actions.
+     * @covers ::panoptocourseembed_core_calendar_provide_event_action
+     */
+    public function test_panoptocourseembed_core_calendar_provide_event_action(): void {
+
         // Create the activity.
         $course = $this->getDataGenerator()->create_course();
-        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', array('course' => $course->id));
+        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', ['course' => $course->id]);
 
         // Create a calendar event.
         $event = $this->create_action_event($course->id, $panoptocourseembed->id,
@@ -63,12 +71,16 @@ class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
         $this->assertTrue($actionevent->is_actionable());
     }
 
-    public function test_panoptocourseembed_core_calendar_provide_event_action_as_non_user() {
+    /**
+     * Test event actions as non-user.
+     * @covers ::mod_panoptocourseembed_core_calendar_provide_event_action_as_non_user
+     */
+    public function test_panoptocourseembed_core_calendar_provide_event_action_as_non_user(): void {
         global $CFG;
 
         // Create the activity.
         $course = $this->getDataGenerator()->create_course();
-        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', array('course' => $course->id));
+        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', ['course' => $course->id]);
 
         // Create a calendar event.
         $event = $this->create_action_event($course->id, $panoptocourseembed->id,
@@ -88,10 +100,14 @@ class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
         $this->assertNull($actionevent);
     }
 
-    public function test_panoptocourseembed_core_calendar_provide_event_action_in_hidden_section() {
+    /**
+     * Test event actions in hidden section.
+     * @covers ::mod_panoptocourseembed_core_calendar_provide_event_action_in_hidden_section
+     */
+    public function test_panoptocourseembed_core_calendar_provide_event_action_in_hidden_section(): void {
         // Create the activity.
         $course = $this->getDataGenerator()->create_course();
-        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', array('course' => $course->id));
+        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', ['course' => $course->id]);
 
         // Create a student.
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
@@ -113,12 +129,16 @@ class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
         $this->assertNull($actionevent);
     }
 
-    public function test_panoptocourseembed_core_calendar_provide_event_action_for_user() {
+    /**
+     * Test event actions for a user.
+     * @covers ::mod_panoptocourseembed_core_calendar_provide_event_action_for_user
+     */
+    public function test_panoptocourseembed_core_calendar_provide_event_action_for_user(): void {
         global $CFG;
 
         // Create the activity.
         $course = $this->getDataGenerator()->create_course();
-        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', array('course' => $course->id));
+        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', ['course' => $course->id]);
 
         // Enrol a student in the course.
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
@@ -145,15 +165,24 @@ class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
         $this->assertTrue($actionevent->is_actionable());
     }
 
-    public function test_panoptocourseembed_core_calendar_provide_event_action_already_completed() {
+    /**
+     * Test event actions for a user in hidden section.
+     * @covers ::mod_panoptocourseembed_core_calendar_provide_event_action_already_completed
+     */
+    public function test_panoptocourseembed_core_calendar_provide_event_action_already_completed(): void {
         global $CFG;
 
         $CFG->enablecompletion = 1;
 
         // Create the activity.
-        $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', array('course' => $course->id),
-            array('completion' => 2, 'completionview' => 1, 'completionexpected' => time() + DAYSECS));
+        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
+        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed',
+            ['course' => $course->id],
+            [
+                'completion' => 2,
+                'completionview' => 1,
+                'completionexpected' => time() + DAYSECS,
+            ]);
 
         // Get some additional data.
         $cm = get_coursemodule_from_instance('panoptocourseembed', $panoptocourseembed->id);
@@ -163,7 +192,7 @@ class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
             \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
 
         // Mark the activity as completed.
-        $completion = new completion_info($course);
+        $completion = new \completion_info($course);
         $completion->set_module_viewed($cm);
 
         // Create an action factory.
@@ -176,15 +205,24 @@ class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
         $this->assertNull($actionevent);
     }
 
-    public function test_panoptocourseembed_core_calendar_provide_event_action_already_completed_for_user() {
+    /**
+     * Test event actions for a user.
+     * @covers ::mod_panoptocourseembed_core_calendar_provide_event_action_already_completed_for_user
+     */
+    public function test_panoptocourseembed_core_calendar_provide_event_action_already_completed_for_user(): void {
         global $CFG;
 
         $CFG->enablecompletion = 1;
 
         // Create the activity.
-        $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', array('course' => $course->id),
-                array('completion' => 2, 'completionview' => 1, 'completionexpected' => time() + DAYSECS));
+        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
+        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed',
+            ['course' => $course->id],
+            [
+                'completion' => 2,
+                'completionview' => 1,
+                'completionexpected' => time() + DAYSECS,
+            ]);
 
         // Enrol a student in the course.
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
@@ -197,7 +235,7 @@ class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
                 \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
 
         // Mark the activity as completed for the student.
-        $completion = new completion_info($course);
+        $completion = new \completion_info($course);
         $completion->set_module_viewed($cm, $student->id);
 
         // Create an action factory.
@@ -219,7 +257,7 @@ class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
      * @return bool|calendar_event
      */
     private function create_action_event($courseid, $instanceid, $eventtype) {
-        $event = new stdClass();
+        $event = new \stdClass();
         $event->name = 'Calendar event';
         $event->modulename  = 'panoptocourseembed';
         $event->courseid = $courseid;
@@ -228,6 +266,6 @@ class mod_panoptocourseembed_lib_testcase extends advanced_testcase {
         $event->eventtype = $eventtype;
         $event->timestart = time();
 
-        return calendar_event::create($event);
+        return \calendar_event::create($event);
     }
 }

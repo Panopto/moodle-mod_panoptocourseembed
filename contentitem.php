@@ -77,7 +77,7 @@ if ($config->lti_ltiversion === LTI_VERSION_1P3) {
 $returnurlparams = [
     'course' => $course->id,
     'id' => $toolid,
-    'sesskey' => sesskey()
+    'sesskey' => sesskey(),
 ];
 $returnurl = new \moodle_url(COURSE_EMBED_PATH, $returnurlparams);
 

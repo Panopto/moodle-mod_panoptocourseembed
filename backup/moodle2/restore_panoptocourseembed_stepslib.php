@@ -38,7 +38,7 @@ class restore_panoptocourseembed_activity_structure_step extends restore_activit
      */
     protected function define_structure() {
 
-        $paths = array();
+        $paths = [];
         $paths[] = new restore_path_element('panoptocourseembed', '/activity/panoptocourseembed');
 
         // Return the paths wrapped into standard activity structure.

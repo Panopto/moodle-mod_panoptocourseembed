@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ namespace mod_panoptocourseembed;
+
 /**
  * PHPUnit panoptocourseembed generator testcase
  *
@@ -31,8 +33,12 @@
  * @copyright  Panopto 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_panoptocourseembed_generator_testcase extends advanced_testcase {
-    public function test_generator() {
+final class generator_test extends \advanced_testcase {
+    /**
+     * Test generator.
+     * @covers ::create_instance
+     */
+    public function test_generator(): void {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -46,9 +52,9 @@ class mod_panoptocourseembed_generator_testcase extends advanced_testcase {
         $this->assertInstanceOf('mod_panoptocourseembed_generator', $generator);
         $this->assertEquals('panoptocourseembed', $generator->get_modulename());
 
-        $generator->create_instance(array('course' => $course->id));
-        $generator->create_instance(array('course' => $course->id));
-        $panoptocourseembed = $generator->create_instance(array('course' => $course->id));
+        $generator->create_instance(['course' => $course->id]);
+        $generator->create_instance(['course' => $course->id]);
+        $panoptocourseembed = $generator->create_instance(['course' => $course->id]);
         $this->assertEquals(3, $DB->count_records('panoptocourseembed'));
 
         $cm = get_coursemodule_from_instance('panoptocourseembed', $panoptocourseembed->id);
@@ -56,7 +62,7 @@ class mod_panoptocourseembed_generator_testcase extends advanced_testcase {
         $this->assertEquals('panoptocourseembed', $cm->modname);
         $this->assertEquals($course->id, $cm->course);
 
-        $context = context_module::instance($cm->id);
+        $context = \context_module::instance($cm->id);
         $this->assertEquals($panoptocourseembed->cmid, $context->instanceid);
     }
 }

@@ -31,8 +31,8 @@ if ($ADMIN->fulltree) {
     $settings->add(
         new admin_setting_configtext_trimmed_courseembed(
             'mod_panoptocourseembed/default_panopto_server',
-            get_string('default_panopto_server', 'mod_panoptocourseembed'),
-            get_string('default_panopto_server_desc', 'mod_panoptocourseembed'),
+            new lang_string('default_panopto_server', 'mod_panoptocourseembed'),
+            new lang_string('default_panopto_server_desc', 'mod_panoptocourseembed'),
             '',
             PARAM_TEXT
         )
@@ -40,8 +40,8 @@ if ($ADMIN->fulltree) {
     $settings->add(
         new admin_setting_configcheckbox(
             'mod_panoptocourseembed/is_responsive',
-            get_string('is_responsive', 'mod_panoptocourseembed'),
-            get_string('is_responsive_desc', 'mod_panoptocourseembed'),
+            new lang_string('is_responsive', 'mod_panoptocourseembed'),
+            new lang_string('is_responsive_desc', 'mod_panoptocourseembed'),
             0
         )
     );

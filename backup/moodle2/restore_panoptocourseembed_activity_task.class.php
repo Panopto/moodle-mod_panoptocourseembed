@@ -56,9 +56,9 @@ class restore_panoptocourseembed_activity_task extends restore_activity_task {
      * processed by the link decoder
      */
     public static function define_decode_contents() {
-        $contents = array();
+        $contents = [];
 
-        $contents[] = new restore_decode_content('panoptocourseembed', array('intro'), 'panoptocourseembed');
+        $contents[] = new restore_decode_content('panoptocourseembed', ['intro'], 'panoptocourseembed');
 
         return $contents;
     }
@@ -68,7 +68,7 @@ class restore_panoptocourseembed_activity_task extends restore_activity_task {
      * to the activity to be executed by the link decoder
      */
     public static function define_decode_rules() {
-        return array();
+        return [];
     }
 
     /**
@@ -78,7 +78,7 @@ class restore_panoptocourseembed_activity_task extends restore_activity_task {
      * of restore_log_rule objects
      */
     public static function define_restore_log_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('panoptocourseembed', 'add', 'view.php?id={course_module}', '{panoptocourseembed}');
         $rules[] = new restore_log_rule('panoptocourseembed', 'update', 'view.php?id={course_module}', '{panoptocourseembed}');
@@ -98,7 +98,7 @@ class restore_panoptocourseembed_activity_task extends restore_activity_task {
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     public static function define_restore_log_rules_for_course() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('panoptocourseembed', 'view all', 'index.php?id={course}', null);
 

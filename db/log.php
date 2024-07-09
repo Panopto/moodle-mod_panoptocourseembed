@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$logs = array(
-    array('module' => 'panoptocourseembed', 'action' => 'add', 'mtable' => 'panoptocourseembed', 'field' => 'name'),
-    array('module' => 'panoptocourseembed', 'action' => 'update', 'mtable' => 'panoptocourseembed', 'field' => 'name'),
-);
+$logs = [
+    ['module' => 'panoptocourseembed', 'action' => 'add', 'mtable' => 'panoptocourseembed', 'field' => 'name'],
+    ['module' => 'panoptocourseembed', 'action' => 'update', 'mtable' => 'panoptocourseembed', 'field' => 'name'],
+];

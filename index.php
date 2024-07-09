@@ -27,7 +27,10 @@ require_once("lib.php");
 
 $id = required_param('id', PARAM_INT);  // Course.
 
-$PAGE->set_url('/mod/panoptocourseembed/index.php', array('id' => $id));
+// Ensure the user is logged in and has access to the course.
+require_login($id);
+
+$PAGE->set_url('/mod/panoptocourseembed/index.php', ['id' => $id]);
 
 redirect("$CFG->wwwroot/course/view.php?id=$id");
 
