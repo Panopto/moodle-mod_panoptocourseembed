@@ -21,8 +21,7 @@
  * @copyright  Panopto 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Get activity name
@@ -30,11 +29,11 @@ defined('MOODLE_INTERNAL') || die;
  * @param object $panoptocourseembed
  * @return string
  */
-function get_panoptocourseembed_name($panoptocourseembed) {
+function panoptocourseembed_get_name($panoptocourseembed) {
     // TODO: Set the name of the panoptocourseembed to the title of the session by storing the session in the intro?
-
     return get_string('modulename', 'panoptocourseembed');
 }
+
 /**
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
@@ -47,7 +46,7 @@ function get_panoptocourseembed_name($panoptocourseembed) {
 function panoptocourseembed_add_instance($panoptocourseembed) {
     global $DB;
 
-    $panoptocourseembed->name = get_panoptocourseembed_name($panoptocourseembed);
+    $panoptocourseembed->name = panoptocourseembed_get_name($panoptocourseembed);
     $panoptocourseembed->timemodified = time();
 
     $id = $DB->insert_record("panoptocourseembed", $panoptocourseembed);
@@ -71,7 +70,7 @@ function panoptocourseembed_add_instance($panoptocourseembed) {
 function panoptocourseembed_update_instance($panoptocourseembed, $mform) {
     global $DB;
 
-    $panoptocourseembed->name = get_panoptocourseembed_name($panoptocourseembed);
+    $panoptocourseembed->name = panoptocourseembed_get_name($panoptocourseembed);
     $panoptocourseembed->timemodified = time();
     $panoptocourseembed->id = $panoptocourseembed->instance;
 
@@ -98,7 +97,7 @@ function panoptocourseembed_update_instance($panoptocourseembed, $mform) {
 function panoptocourseembed_delete_instance($id) {
     global $DB;
 
-    if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", array("id" => $id))) {
+    if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", ["id" => $id])) {
         return false;
     }
 
@@ -107,7 +106,7 @@ function panoptocourseembed_delete_instance($id) {
     $cm = get_coursemodule_from_instance('panoptocourseembed', $id);
     \core_completion\api::update_completion_date_event($cm->id, 'panoptocourseembed', $panoptocourseembed->id, null);
 
-    if (! $DB->delete_records("panoptocourseembed", array("id" => $panoptocourseembed->id))) {
+    if (! $DB->delete_records("panoptocourseembed", ["id" => $panoptocourseembed->id])) {
         $result = false;
     }
 
@@ -127,11 +126,11 @@ function panoptocourseembed_get_coursemodule_info($coursemodule) {
     global $DB;
 
     if ($panoptocourseembed = $DB->get_record('panoptocourseembed',
-        array('id' => $coursemodule->instance), 'id, name, intro, introformat')) {
+        ['id' => $coursemodule->instance], 'id, name, intro, introformat')) {
         if (empty($panoptocourseembed->name)) {
             // Panoptocourseembed name missing, fix it.
             $panoptocourseembed->name = "panoptocourseembed{$panoptocourseembed->id}";
-            $DB->set_field('panoptocourseembed', 'name', $panoptocourseembed->name, array('id' => $panoptocourseembed->id));
+            $DB->set_field('panoptocourseembed', 'name', $panoptocourseembed->name, ['id' => $panoptocourseembed->id]);
         }
         $info = new cached_cm_info();
         // No filtering hre because this info is cached and filtered later.
@@ -153,8 +152,7 @@ function panoptocourseembed_reset_userdata($data) {
 
     // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
     // See MDL-9367.
-
-    return array();
+    return [];
 }
 
 /**
@@ -206,8 +204,8 @@ function panoptocourseembed_supports($feature) {
  * @return stdClass an object with the different type of areas indicating if they were updated or not
  * @since Moodle 3.2
  */
-function panoptocourseembed_check_updates_since(cm_info $cm, $from, $filter = array()) {
-    $updates = course_check_module_updates_since($cm, $from, array(), $filter);
+function panoptocourseembed_check_updates_since(cm_info $cm, $from, $filter = []) {
+    $updates = course_check_module_updates_since($cm, $from, [], $filter);
     return $updates;
 }
 

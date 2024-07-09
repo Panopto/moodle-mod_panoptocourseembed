@@ -57,15 +57,12 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
         }
 
         $mform = $this->_form;
-
         $mform->addElement('header', 'generalhdr', get_string('general'));
-
-        $cimurlparams = [ 'courseid' => $COURSE->id, ];
+        $cimurlparams = ['courseid' => $COURSE->id];
         $cimurl = new moodle_url('/mod/panoptocourseembed/contentitem.php', $cimurlparams);
-
         $urlparams = [
             'course' => $COURSE->id,
-            'contenturl' => $toolurl
+            'contenturl' => $toolurl,
         ];
         $url = new moodle_url('/mod/panoptocourseembed/view_content.php', $urlparams);
 
@@ -87,8 +84,8 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
         // Buttons.
         $this->add_action_buttons(true, false, null);
 
-        // YUI Modules.
-        $urlparams = [ 'courseid' => $COURSE->id, ];
+        // AMD Modules.
+        $urlparams = ['courseid' => $COURSE->id];
 
         $isresponsive = false;
         if (get_config('mod_panoptocourseembed', 'is_responsive')) {
@@ -110,11 +107,7 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
             'isresponsive' => $isresponsive,
         ];
 
-        $PAGE->requires->yui_module(
-            'moodle-mod_panoptocourseembed-contentselectionpanel', 'M.mod_panoptocourseembed.initcontentselectionpanel',
-            array($params),
-            null,
-            true);
+        $PAGE->requires->js_call_amd('mod_panoptocourseembed/contentselectionpanel', 'initselectionpanel', [$params]);
         $PAGE->requires->string_for_js('replacevideo', 'panoptocourseembed');
         $PAGE->requires->string_for_js('selectvideo', 'panoptocourseembed');
     }

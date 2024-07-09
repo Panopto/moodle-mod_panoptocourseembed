@@ -25,15 +25,14 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$functions = array(
-
-    'mod_panoptocourseembed_get_panoptocourseembeds_by_courses' => array(
+$functions = [
+    'mod_panoptocourseembed_get_panoptocourseembeds_by_courses' => [
         'classname'     => 'mod_panoptocourseembed_external',
         'methodname'    => 'get_panoptocourseembeds_by_courses',
-        'description'   => 'Returns a list of panoptocourseembeds in a provided list of courses,
-if no list is provided all panoptocourseembeds that the user can view will be returned.',
+        'description'   =>
+            'Returns a list of panoptocourseembeds in a provided list of courses, if no list is provided all panoptocourseembeds that the user can view will be returned.',
         'type'          => 'read',
         'capabilities'  => 'mod/panoptocourseembed:view',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
-    ),
-);
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+];

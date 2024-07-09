@@ -69,6 +69,6 @@ class activity extends \core_search\base_activity {
      * @return \moodle_url
      */
     public function get_context_url(\core_search\document $doc) {
-        return new \moodle_url('/course/view.php', array('id' => $doc->get('courseid')));
+        return new \moodle_url('/course/view.php', ['id' => $doc->get('courseid')]);
     }
 }

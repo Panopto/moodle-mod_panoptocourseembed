@@ -21,7 +21,6 @@
  * @copyright  Panopto 2021
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -37,44 +36,42 @@ class mod_panoptocourseembed_renderer extends plugin_renderer_base {
     public function get_content_selection_buttons($previewintro = '') {
         $html = '';
 
-        $attr = array(
+        $attr = [
             'type' => 'hidden',
             'name' => 'sesskey',
-            'value' => sesskey()
-        );
+            'value' => sesskey(),
+        ];
         $html .= html_writer::empty_tag('input', $attr);
 
-        $html .= html_writer::start_tag('div', ['id' => 'panopto-intro-preview', 'class' => 'intro-preview-container']);
+        $html .= html_writer::start_tag('div', ['id' => 'panopto-intro-preview', 'class' => 'panopto-intro-preview-container']);
         $html .= $previewintro;
         $html .= html_writer::end_tag('div');
 
         $html .= html_writer::start_tag('center', ['class' => 'm-t-2 m-b-1']);
 
-        $attr = array(
+        $attr = [
             'class' => 'btn btn-primary',
             'type' => 'button',
             'id' => 'id_select_video',
             'name' => 'select_video',
-            'value' => get_string('selectvideo', 'panoptocourseembed')
-        );
+            'value' => get_string('selectvideo', 'panoptocourseembed'),
+        ];
 
         $html .= html_writer::empty_tag('input', $attr);
 
-        $attr = array(
-            'class' => 'panopto-btn-divider'
-        );
+        $attr = ['class' => 'panopto-btn-divider'];
         $html .= html_writer::start_tag('div', $attr);
         $html .= html_writer::end_tag('div');
 
-        $attr = array(
+        $attr = [
             'class' => 'btn btn-primary',
             'type' => 'button',
             'name' => 'folder_view',
             'id' => 'id_folder_view',
-            'value' => get_string('folderview', 'panoptocourseembed'));
+            'value' => get_string('folderview', 'panoptocourseembed'),
+        ];
 
         $html .= html_writer::empty_tag('input', $attr);
-
         $html .= html_writer::end_tag('center');
 
         return $html;

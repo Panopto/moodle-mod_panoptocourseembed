@@ -28,25 +28,25 @@ $id = optional_param('id', 0, PARAM_INT);    // Course Module ID, or.
 $panoptoid = optional_param('panoptoid', 0, PARAM_INT);     // Panopto course embed ID.
 
 if ($id) {
-    $PAGE->set_url('/mod/panoptocourseembed/index.php', array('id' => $id));
+    $PAGE->set_url('/mod/panoptocourseembed/index.php', ['id' => $id]);
     if (! $cm = get_coursemodule_from_id('panoptocourseembed', $id)) {
         throw new moodle_exception('invalidcoursemodule');
     }
 
-    if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
+    if (! $course = $DB->get_record("course", ["id" => $cm->course])) {
         throw new moodle_exception('coursemisconf');
     }
 
-    if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", array("id" => $cm->instance))) {
+    if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", ["id" => $cm->instance])) {
         throw new moodle_exception('invalidcoursemodule');
     }
 
 } else {
-    $PAGE->set_url('/mod/panoptocourseembed/index.php', array('panoptoid' => $panoptoid));
-    if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", array("id" => $panoptoid))) {
+    $PAGE->set_url('/mod/panoptocourseembed/index.php', ['panoptoid' => $panoptoid]);
+    if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", ["id" => $panoptoid])) {
         throw new moodle_exception('invalidcoursemodule');
     }
-    if (! $course = $DB->get_record("course", array("id" => $panoptocourseembed->course)) ) {
+    if (! $course = $DB->get_record("course", ["id" => $panoptocourseembed->course]) ) {
         throw new moodle_exception('coursemisconf');
     }
     if (! $cm = get_coursemodule_from_instance("panoptocourseembed", $panoptocourseembed->id, $course->id)) {

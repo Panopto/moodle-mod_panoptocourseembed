@@ -41,14 +41,14 @@ class backup_panoptocourseembed_activity_structure_step extends backup_activity_
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated.
-        $panoptocourseembed = new backup_nested_element('panoptocourseembed', array('id'), array(
-            'name', 'intro', 'introformat', 'timemodified'));
+        $panoptocourseembed = new backup_nested_element('panoptocourseembed', ['id'],
+            ['name', 'intro', 'introformat', 'timemodified']);
 
         // Build the tree.
         // (love this).
 
         // Define sources.
-        $panoptocourseembed->set_source_table('panoptocourseembed', array('id' => backup::VAR_ACTIVITYID));
+        $panoptocourseembed->set_source_table('panoptocourseembed', ['id' => backup::VAR_ACTIVITYID]);
 
         // Define id annotations.
         // (none).

@@ -22,10 +22,16 @@
  * @copyright  Panopto 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace mod_panoptocourseembed\tests;
+
+use mod_panoptocourseembed\external\mod_panoptocourseembed_external;
+use externallib_advanced_testcase;
+
+defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
+require_once($CFG->dirroot . '/mod/panoptocourseembed/classes/external/external.php');
 
 /**
  * External mod_panoptocourseembed functions unit tests
@@ -38,9 +44,10 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 class mod_panoptocourseembed_external_testcase extends externallib_advanced_testcase {
 
     /**
-     * Test test_mod_panoptocourseembed_get_panoptocourseembeds_by_courses
+     * Test get panoptocourseembeds by courses.
+     * @covers ::mod_panoptocourseembed_get_panoptocourseembeds_by_courses
      */
-    public function test_mod_panoptocourseembed_get_panoptocourseembeds_by_courses() {
+    public function test_mod_panoptocourseembed_get_panoptocourseembeds_by_courses(): void {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -49,16 +56,16 @@ class mod_panoptocourseembed_external_testcase extends externallib_advanced_test
         $course2 = self::getDataGenerator()->create_course();
 
         $student = self::getDataGenerator()->create_user();
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->getDataGenerator()->enrol_user($student->id, $course1->id, $studentrole->id);
 
         // First panoptocourseembed.
-        $record = new stdClass();
+        $record = new \stdClass();
         $record->course = $course1->id;
         $panoptocourseembed1 = self::getDataGenerator()->create_module('panoptocourseembed', $record);
 
         // Second panoptocourseembed.
-        $record = new stdClass();
+        $record = new \stdClass();
         $record->course = $course2->id;
         $panoptocourseembed2 = self::getDataGenerator()->create_module('panoptocourseembed', $record);
 
@@ -78,8 +85,8 @@ class mod_panoptocourseembed_external_testcase extends externallib_advanced_test
         $returndescription = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses_returns();
 
         // Create what we expect to be returned when querying the two courses.
-        $expectedfields = array('id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'timemodified',
-                                'section', 'visible', 'groupmode', 'groupingid');
+        $expectedfields = ['id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'timemodified',
+                                'section', 'visible', 'groupmode', 'groupingid'];
 
         // Add expected coursemodule and data.
         $panoptocourseembed1->coursemodule = $panoptocourseembed1->cmid;
@@ -103,18 +110,18 @@ class mod_panoptocourseembed_external_testcase extends externallib_advanced_test
             $expected2[$field] = $panoptocourseembed2->{$field};
         }
 
-        $expectedpanoptocourseembeds = array($expected2, $expected1);
+        $expectedpanoptocourseembeds = [$expected2, $expected1];
 
         // Call the external function passing course ids.
-        $result = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses(array($course2->id, $course1->id));
-        $result = external_api::clean_returnvalue($returndescription, $result);
+        $result = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses([$course2->id, $course1->id]);
+        $result = \external_api::clean_returnvalue($returndescription, $result);
 
         $this->assertEquals($expectedpanoptocourseembeds, $result['panoptocourseembeds']);
         $this->assertCount(0, $result['warnings']);
 
         // Call the external function without passing course id.
-        $result = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses();
-        $result = external_api::clean_returnvalue($returndescription, $result);
+        $result = get_panoptocourseembeds_by_courses();
+        $result = \external_api::clean_returnvalue($returndescription, $result);
         $this->assertEquals($expectedpanoptocourseembeds, $result['panoptocourseembeds']);
         $this->assertCount(0, $result['warnings']);
 
@@ -124,11 +131,11 @@ class mod_panoptocourseembed_external_testcase extends externallib_advanced_test
 
         // Call the external function without passing course id.
         $result = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses();
-        $result = external_api::clean_returnvalue($returndescription, $result);
+        $result = \external_api::clean_returnvalue($returndescription, $result);
         $this->assertEquals($expectedpanoptocourseembeds, $result['panoptocourseembeds']);
 
         // Call for the second course we unenrolled the user from, expected warning.
-        $result = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses(array($course2->id));
+        $result = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses([$course2->id]);
         $this->assertCount(1, $result['warnings']);
         $this->assertEquals('1', $result['warnings'][0]['warningcode']);
         $this->assertEquals($course2->id, $result['warnings'][0]['itemid']);
