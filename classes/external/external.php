@@ -48,7 +48,7 @@ require_once("$CFG->libdir/externallib.php");
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.3
  */
-class mod_panoptocourseembed_external extends external_api {
+class external extends external_api {
 
     /**
      * Describes the parameters for get_panoptocourseembeds_by_courses.
