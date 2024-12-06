@@ -121,20 +121,97 @@ $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
     /**
      * Trigger the handleError callback with the errors.
      */
-    <?php if (count($errors) > 0): ?>
-        parent.document.CALLBACKS.handleError(<?php echo json_encode($errors); ?>);
-    <?php else: ?>
+    <?php
+    /**
+     * This is the if statement checking for errors.
+     *
+     * @package    mod_panoptocourseembed
+     * @copyright  2024 Panopto
+     * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+     */
+    if (count($errors) > 0): ?>
+        parent.document.CALLBACKS.handleError(<?php
+        /**
+         * JSON encode the errors array for the handleError callback.
+         *
+         * @package    mod_panoptocourseembed
+         * @copyright  2024 Panopto
+         * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+         */
+        echo json_encode($errors); ?>);
+        <?php
+        /**
+         * Else statement for handling successful event dispatch.
+         *
+         * @package    mod_panoptocourseembed
+         * @copyright  2024 Panopto
+         * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+         */
+    else: ?>
         /**
          * Create and dispatch a custom event 'sessionSelected' with session details.
-         * This event should close the panopto popup and pass the new content URL to the existing iframe.
+         * This event should close the Panopto popup and pass the new content URL to the existing iframe.
          */
         const detailObject = {
-            title: "<?php echo $title ?>",
-            ltiViewerUrl: "<?php echo $ltiviewerurl->out(false) ?>",
-            contentUrl: "<?php echo $url ?>",
-            customData: "<?php echo urlencode(json_encode($customdata)) ?>",
-            width: <?php echo $framewidth ?>,
-            height: <?php echo $frameheight ?>
+            title: "<?php
+            /**
+             * Title for the LTI viewer, generated without additional parameters.
+             *
+             * @package    mod_panoptocourseembed
+             * @copyright  2024 Panopto
+             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+             */
+            echo $title ?>",
+
+            ltiViewerUrl: "<?php
+            /**
+             * URL for the LTI viewer, generated without additional parameters.
+             *
+             * @package    mod_panoptocourseembed
+             * @copyright  2024 Panopto
+             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+             */
+            echo $ltiviewerurl->out(false) ?>",
+
+            contentUrl: "<?php
+            /**
+             * Content URL for embedding in the iframe.
+             *
+             * @package    mod_panoptocourseembed
+             * @copyright  2024 Panopto
+             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+             */
+            echo $url ?>",
+
+            customData: "<?php
+            /**
+             * Custom data encoded in JSON format, URL-encoded for safe transport.
+             *
+             * @package    mod_panoptocourseembed
+             * @copyright  2024 Panopto
+             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+             */
+            echo urlencode(json_encode($customdata)) ?>",
+
+            width: <?php
+            /**
+             * Frame width, dynamically retrieved from PHP.
+             *
+             * @package    mod_panoptocourseembed
+             * @copyright  2024 Panopto
+             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+             */
+            echo $framewidth ?>,
+
+            height: <?php
+            /**
+             * Frame height, dynamically retrieved from PHP.
+             *
+             * @package    mod_panoptocourseembed
+             * @copyright  2024 Panopto
+             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+             */
+            echo $frameheight ?>
         };
 
         const sessionSelectedEvent = new CustomEvent('sessionSelected', {
@@ -144,5 +221,13 @@ $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
         });
 
         parent.document.body.dispatchEvent(sessionSelectedEvent);
-    <?php endif; ?>
+        <?php
+        /**
+         * End of if-else statement.
+         *
+         * @package    mod_panoptocourseembed
+         * @copyright  2024 Panopto
+         * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+         */
+    endif; ?>
 </script>

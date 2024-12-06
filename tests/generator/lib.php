@@ -39,7 +39,7 @@ class mod_panoptocourseembed_generator extends testing_module_generator {
      * @param array $record Record for the instance.
      * @param array|null $options Options for the instance.
      */
-    public function create_instance($record = null, array $options = null) {
+    public function create_instance($record = null, ?array $options = null) {
         $record = (array)$record;
         $record['showdescription'] = 1;
         return parent::create_instance($record, $options);
