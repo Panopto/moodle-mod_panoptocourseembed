@@ -21,7 +21,10 @@
  * @copyright  Panopto 2021
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+// @codingStandardsIgnoreStart
 defined('MOODLE_INTERNAL') || die();
+// @codingStandardsIgnoreEnd
 
 /**
  * This class renders the course embed pages.

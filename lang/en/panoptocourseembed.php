@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['default_panopto_server'] = 'Default Panopto Server';
+$string['default_panopto_server_desc'] = 'The FQDN of the Panopto server we will try to use in the case a course is not provisioned with Panopto via the block. E.g. demo.hosted.panopto.com';
+$string['folderview'] = 'Embed Folder View';
 $string['indicator:cognitivedepth'] = 'Panopto course embed cognitive';
 $string['indicator:cognitivedepth_help'] = 'This indicator is based on the cognitive depth reached by the student in a Panopto course embed resource.';
 $string['indicator:cognitivedepthdef'] = 'Panopto course embed cognitive';
@@ -32,21 +35,18 @@ $string['indicator:socialbreadth_help'] = 'This indicator is based on the social
 $string['indicator:socialbreadthdef'] = 'Panopto course embed social';
 $string['indicator:socialbreadthdef_help'] = 'The participant has reached this percentage of the social engagement offered by the Panopto course embed resources during this analysis interval (Levels = No participation, Participant alone)';
 $string['indicator:socialbreadthdef_link'] = 'Learning_analytics_indicators#Social_breadth';
-$string['panoptocourseembed:addinstance'] = 'Add a new Panopto course embed';
-$string['panoptocourseembed:view'] = 'View Panopto course embed';
+$string['is_responsive'] = 'Responsive folders and videos';
+$string['is_responsive_desc'] = 'If this setting is turned on, both folder and videos will be responsive on the page. This will affect only new embeds, after settings is turned on.';
 $string['modulename'] = 'Panopto course embed';
 $string['modulename_help'] = 'The Panopto course embed module enables Panopto video sessions and folder views to be inserted into the course page in between links to other resources and activities.';
 $string['modulename_link'] = 'mod/panoptocourseembed/view';
 $string['modulenameplural'] = 'Panopto course embeds';
 $string['no_existing_lti_tools'] = 'No pre-configured LTI tool exists for your Panopto server. Please contact your Moodle administrator and make sure that the one time admin setup was completed.';
-$string['privacy:metadata'] = 'The Panopto course embed resource plugin does not store any personal data.';
+$string['panoptocourseembed:addinstance'] = 'Add a new Panopto course embed';
+$string['panoptocourseembed:view'] = 'View Panopto course embed';
 $string['pluginadministration'] = 'Panopto course embed administration';
 $string['pluginname'] = 'Panopto course embed';
+$string['privacy:metadata'] = 'The Panopto course embed resource plugin does not store any personal data.';
+$string['replacevideo'] = 'Replace Video';
 $string['search:activity'] = 'Panopto course embed';
 $string['selectvideo'] = 'Select Video';
-$string['replacevideo'] = 'Replace Video';
-$string['folderview'] = 'Embed Folder View';
-$string['default_panopto_server'] = 'Default Panopto Server';
-$string['default_panopto_server_desc'] = 'The FQDN of the Panopto server we will try to use in the case a course is not provisioned with Panopto via the block. E.g. demo.hosted.panopto.com';
-$string['is_responsive'] = 'Responsive folders and videos';
-$string['is_responsive_desc'] = 'If this setting is turned on, both folder and videos will be responsive on the page. This will affect only new embeds, after settings is turned on.';

@@ -24,14 +24,12 @@
  */
 namespace mod_panoptocourseembed\tests;
 
-use mod_panoptocourseembed\external\mod_panoptocourseembed_external;
 use externallib_advanced_testcase;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
-require_once($CFG->dirroot . '/mod/panoptocourseembed/classes/external/external.php');
 
 /**
  * External mod_panoptocourseembed functions unit tests
@@ -45,7 +43,6 @@ class mod_panoptocourseembed_external_testcase extends externallib_advanced_test
 
     /**
      * Test get panoptocourseembeds by courses.
-     * @covers ::mod_panoptocourseembed_get_panoptocourseembeds_by_courses
      */
     public function test_mod_panoptocourseembed_get_panoptocourseembeds_by_courses(): void {
         global $DB;
@@ -82,7 +79,7 @@ class mod_panoptocourseembed_external_testcase extends externallib_advanced_test
 
         self::setUser($student);
 
-        $returndescription = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses_returns();
+        $returndescription = \mod_panoptocourseembed\external\external::get_panoptocourseembeds_by_courses_returns();
 
         // Create what we expect to be returned when querying the two courses.
         $expectedfields = ['id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'timemodified',
@@ -113,7 +110,7 @@ class mod_panoptocourseembed_external_testcase extends externallib_advanced_test
         $expectedpanoptocourseembeds = [$expected2, $expected1];
 
         // Call the external function passing course ids.
-        $result = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses([$course2->id, $course1->id]);
+        $result = \mod_panoptocourseembed\external\external::get_panoptocourseembeds_by_courses([$course2->id, $course1->id]);
         $result = \external_api::clean_returnvalue($returndescription, $result);
 
         $this->assertEquals($expectedpanoptocourseembeds, $result['panoptocourseembeds']);
@@ -130,12 +127,12 @@ class mod_panoptocourseembed_external_testcase extends externallib_advanced_test
         array_shift($expectedpanoptocourseembeds);
 
         // Call the external function without passing course id.
-        $result = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses();
+        $result = \mod_panoptocourseembed\external\external::get_panoptocourseembeds_by_courses();
         $result = \external_api::clean_returnvalue($returndescription, $result);
         $this->assertEquals($expectedpanoptocourseembeds, $result['panoptocourseembeds']);
 
         // Call for the second course we unenrolled the user from, expected warning.
-        $result = mod_panoptocourseembed_external::get_panoptocourseembeds_by_courses([$course2->id]);
+        $result = \mod_panoptocourseembed\external\external::get_panoptocourseembeds_by_courses([$course2->id]);
         $this->assertCount(1, $result['warnings']);
         $this->assertEquals('1', $result['warnings'][0]['warningcode']);
         $this->assertEquals($course2->id, $result['warnings'][0]['itemid']);

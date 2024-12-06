@@ -28,6 +28,8 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
 
+require_login();
+
 /**
  * This class contains the forms to create and edit an instance of this module
  *
