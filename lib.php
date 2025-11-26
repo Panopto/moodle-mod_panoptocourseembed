@@ -52,7 +52,11 @@ function panoptocourseembed_add_instance($panoptocourseembed) {
 
     $completiontimeexpected = !empty($panoptocourseembed->completionexpected) ? $panoptocourseembed->completionexpected : null;
     \core_completion\api::update_completion_date_event(
-        $panoptocourseembed->coursemodule, 'panoptocourseembed', $id, $completiontimeexpected);
+        $panoptocourseembed->coursemodule,
+        'panoptocourseembed',
+        $id,
+        $completiontimeexpected
+    );
 
     return $id;
 }
@@ -80,7 +84,11 @@ function panoptocourseembed_update_instance($panoptocourseembed, $mform) {
 
     $completiontimeexpected = !empty($panoptocourseembed->completionexpected) ? $panoptocourseembed->completionexpected : null;
     \core_completion\api::update_completion_date_event(
-        $panoptocourseembed->coursemodule, 'panoptocourseembed', $panoptocourseembed->id, $completiontimeexpected);
+        $panoptocourseembed->coursemodule,
+        'panoptocourseembed',
+        $panoptocourseembed->id,
+        $completiontimeexpected
+    );
 
     return $DB->update_record("panoptocourseembed", $panoptocourseembed);
 }
@@ -124,8 +132,13 @@ function panoptocourseembed_delete_instance($id) {
 function panoptocourseembed_get_coursemodule_info($coursemodule) {
     global $DB;
 
-    if ($panoptocourseembed = $DB->get_record('panoptocourseembed',
-        ['id' => $coursemodule->instance], 'id, name, intro, introformat')) {
+    if (
+        $panoptocourseembed = $DB->get_record(
+            'panoptocourseembed',
+            ['id' => $coursemodule->instance],
+            'id, name, intro, introformat'
+        )
+    ) {
         if (empty($panoptocourseembed->name)) {
             // Panoptocourseembed name missing, fix it.
             $panoptocourseembed->name = "panoptocourseembed{$panoptocourseembed->id}";
@@ -168,7 +181,7 @@ function panoptocourseembed_reset_userdata($data) {
  * @return bool|null True if module supports feature, false if not, null if doesn't know
  */
 function panoptocourseembed_supports($feature) {
-    switch($feature) {
+    switch ($feature) {
         case FEATURE_IDNUMBER:
             return true;
         case FEATURE_GROUPS:
@@ -219,9 +232,11 @@ function panoptocourseembed_check_updates_since(cm_info $cm, $from, $filter = []
  * @param int $userid User id to use for all capability checks, etc. Set to 0 for current user (default).
  * @return \core_calendar\local\event\entities\action_interface|null
  */
-function mod_panoptocourseembed_core_calendar_provide_event_action(calendar_event $event,
-                                                      \core_calendar\action_factory $factory,
-                                                      int $userid = 0) {
+function mod_panoptocourseembed_core_calendar_provide_event_action(
+    calendar_event $event,
+    \core_calendar\action_factory $factory,
+    int $userid = 0
+) {
     $cm = get_fast_modinfo($event->courseid, $userid)->instances['panoptocourseembed'][$event->instance];
 
     if (!$cm->uservisible) {

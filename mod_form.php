@@ -25,8 +25,10 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
 require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
+require_once($CFG->dirroot . '/blocks/panopto/lib/panopto_data.php');
+
 
 require_login();
 
@@ -38,7 +40,6 @@ require_login();
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_panoptocourseembed_mod_form extends moodleform_mod {
-
     /**
      * Definition function for the form.
      */
@@ -58,6 +59,10 @@ class mod_panoptocourseembed_mod_form extends moodleform_mod {
             return;
         }
 
+        // If configured we will provision the course for lti.
+        \panopto_data::provision_course_for_lti($COURSE->id);
+
+        // Start loading the form.
         $mform = $this->_form;
         $mform->addElement('header', 'generalhdr', get_string('general'));
         $cimurlparams = ['courseid' => $COURSE->id];

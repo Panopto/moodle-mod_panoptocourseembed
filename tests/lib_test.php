@@ -33,7 +33,6 @@ namespace mod_panoptocourseembed;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class lib_test extends \advanced_testcase {
-
     /**
      * Set up.
      */
@@ -54,8 +53,11 @@ final class lib_test extends \advanced_testcase {
         $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', ['course' => $course->id]);
 
         // Create a calendar event.
-        $event = $this->create_action_event($course->id, $panoptocourseembed->id,
-            \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
+        $event = $this->create_action_event(
+            $course->id,
+            $panoptocourseembed->id,
+            \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED
+        );
 
         // Create an action factory.
         $factory = new \core_calendar\action_factory();
@@ -83,8 +85,11 @@ final class lib_test extends \advanced_testcase {
         $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed', ['course' => $course->id]);
 
         // Create a calendar event.
-        $event = $this->create_action_event($course->id, $panoptocourseembed->id,
-                \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
+        $event = $this->create_action_event(
+            $course->id,
+            $panoptocourseembed->id,
+            \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED
+        );
 
         // Now log out.
         $CFG->forcelogin = true; // We don't want to be logged in as guest, as guest users might still have some capabilities.
@@ -113,8 +118,11 @@ final class lib_test extends \advanced_testcase {
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
 
         // Create a calendar event.
-        $event = $this->create_action_event($course->id, $panoptocourseembed->id,
-                \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
+        $event = $this->create_action_event(
+            $course->id,
+            $panoptocourseembed->id,
+            \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED
+        );
 
         // Set sections 0 as hidden.
         set_section_visible($course->id, 0, 0);
@@ -144,8 +152,11 @@ final class lib_test extends \advanced_testcase {
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
 
         // Create a calendar event.
-        $event = $this->create_action_event($course->id, $panoptocourseembed->id,
-            \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
+        $event = $this->create_action_event(
+            $course->id,
+            $panoptocourseembed->id,
+            \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED
+        );
 
         // Now, log out.
         $CFG->forcelogin = true; // We don't want to be logged in as guest, as guest users might still have some capabilities.
@@ -176,20 +187,25 @@ final class lib_test extends \advanced_testcase {
 
         // Create the activity.
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed',
+        $panoptocourseembed = $this->getDataGenerator()->create_module(
+            'panoptocourseembed',
             ['course' => $course->id],
             [
                 'completion' => 2,
                 'completionview' => 1,
                 'completionexpected' => time() + DAYSECS,
-            ]);
+            ]
+        );
 
         // Get some additional data.
         $cm = get_coursemodule_from_instance('panoptocourseembed', $panoptocourseembed->id);
 
         // Create a calendar event.
-        $event = $this->create_action_event($course->id, $panoptocourseembed->id,
-            \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
+        $event = $this->create_action_event(
+            $course->id,
+            $panoptocourseembed->id,
+            \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED
+        );
 
         // Mark the activity as completed.
         $completion = new \completion_info($course);
@@ -216,13 +232,15 @@ final class lib_test extends \advanced_testcase {
 
         // Create the activity.
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $panoptocourseembed = $this->getDataGenerator()->create_module('panoptocourseembed',
+        $panoptocourseembed = $this->getDataGenerator()->create_module(
+            'panoptocourseembed',
             ['course' => $course->id],
             [
                 'completion' => 2,
                 'completionview' => 1,
                 'completionexpected' => time() + DAYSECS,
-            ]);
+            ]
+        );
 
         // Enrol a student in the course.
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
@@ -231,8 +249,11 @@ final class lib_test extends \advanced_testcase {
         $cm = get_coursemodule_from_instance('panoptocourseembed', $panoptocourseembed->id);
 
         // Create a calendar event.
-        $event = $this->create_action_event($course->id, $panoptocourseembed->id,
-                \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
+        $event = $this->create_action_event(
+            $course->id,
+            $panoptocourseembed->id,
+            \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED
+        );
 
         // Mark the activity as completed for the student.
         $completion = new \completion_info($course);

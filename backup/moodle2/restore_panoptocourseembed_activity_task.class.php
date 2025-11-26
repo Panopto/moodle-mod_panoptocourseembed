@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/mod/panoptocourseembed/backup/moodle2/restore_pan
  *
  */
 class restore_panoptocourseembed_activity_task extends restore_activity_task {
-
     /**
      * Define (add) particular settings this activity can have
      */
@@ -48,7 +47,11 @@ class restore_panoptocourseembed_activity_task extends restore_activity_task {
     protected function define_my_steps() {
         // Panoptocourseembed only has one structure step.
         $this->add_step(
-            new restore_panoptocourseembed_activity_structure_step('panoptocourseembed_structure', 'panoptocourseembed.xml'));
+            new restore_panoptocourseembed_activity_structure_step(
+                'panoptocourseembed_structure',
+                'panoptocourseembed.xml'
+            )
+        );
     }
 
     /**

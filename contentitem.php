@@ -60,8 +60,7 @@ if ($config->lti_ltiversion === LTI_VERSION_1P3) {
         $ltiviewerurl = new moodle_url(COURSE_EMBED_PATH);
         $resourcelinkid = sha1($ltiviewerurl->out(false) .
             '&' . $courseid .
-            '&' . $course->timecreated
-        );
+            '&' . $course->timecreated);
         $lti->id = $resourcelinkid;
     }
     if (!isset($SESSION->lti_initiatelogin_status)) {
@@ -83,8 +82,18 @@ $returnurl = new \moodle_url(COURSE_EMBED_PATH, $returnurlparams);
 
 // Prepare the request.
 $request = lti_build_content_item_selection_request(
-    $toolid, $course, $returnurl, '', '', [], [],
-    false, false, false, false, false
+    $toolid,
+    $course,
+    $returnurl,
+    '',
+    '',
+    [],
+    [],
+    false,
+    false,
+    false,
+    false,
+    false
 );
 
 // Get the launch HTML.

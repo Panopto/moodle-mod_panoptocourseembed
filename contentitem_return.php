@@ -129,7 +129,7 @@ $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
      * @copyright  2024 Panopto
      * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
      */
-    if (count($errors) > 0): ?>
+    if (count($errors) > 0) : ?>
         parent.document.CALLBACKS.handleError(<?php
         /**
          * JSON encode the errors array for the handleError callback.
@@ -147,7 +147,7 @@ $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
          * @copyright  2024 Panopto
          * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
          */
-    else: ?>
+    else : ?>
         /**
          * Create and dispatch a custom event 'sessionSelected' with session details.
          * This event should close the Panopto popup and pass the new content URL to the existing iframe.
