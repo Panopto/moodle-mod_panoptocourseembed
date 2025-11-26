@@ -31,7 +31,6 @@ require_once($CFG->dirroot . '/mod/panoptocourseembed/backup/moodle2/backup_pano
  * Provides the steps to perform one complete backup of the panoptocourseembed instance
  */
 class backup_panoptocourseembed_activity_task extends backup_activity_task {
-
     /**
      * No specific settings for this activity
      */
@@ -43,7 +42,11 @@ class backup_panoptocourseembed_activity_task extends backup_activity_task {
      */
     protected function define_my_steps() {
         $this->add_step(
-            new backup_panoptocourseembed_activity_structure_step('panoptocourseembed_structure', 'panoptocourseembed.xml'));
+            new backup_panoptocourseembed_activity_structure_step(
+                'panoptocourseembed_structure',
+                'panoptocourseembed.xml'
+            )
+        );
     }
 
     /**

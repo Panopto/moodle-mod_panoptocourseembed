@@ -33,5 +33,3 @@ require_login($id);
 $PAGE->set_url('/mod/panoptocourseembed/index.php', ['id' => $id]);
 
 redirect("$CFG->wwwroot/course/view.php?id=$id");
-
-

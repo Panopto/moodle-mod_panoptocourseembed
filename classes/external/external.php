@@ -49,7 +49,6 @@ require_once("$CFG->libdir/externallib.php");
  * @since      Moodle 3.3
  */
 class external extends external_api {
-
     /**
      * Describes the parameters for get_panoptocourseembeds_by_courses.
      *
@@ -57,10 +56,16 @@ class external extends external_api {
      * @since Moodle 3.3
      */
     public static function get_panoptocourseembeds_by_courses_parameters() {
-        return new external_function_parameters (
+        return new external_function_parameters(
             [
                 'courseids' => new external_multiple_structure(
-                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, []
+                    new external_value(
+                        PARAM_INT,
+                        'Course id'
+                    ),
+                    'Array of course ids',
+                    VALUE_DEFAULT,
+                    []
                 ),
             ]
         );
@@ -90,8 +95,7 @@ class external extends external_api {
 
         // Ensure there are courseids to loop through.
         if (!empty($params['courseids'])) {
-
-            list($courses, $warnings) = external_util::validate_courses($params['courseids'], $mycourses);
+            [$courses, $warnings] = external_util::validate_courses($params['courseids'], $mycourses);
 
             // Get the panoptocourseembeds in this course, this function checks users visibility permissions.
             // We can avoid then additional validate_context calls.
@@ -101,14 +105,16 @@ class external extends external_api {
                 // Entry to return.
                 $panoptocourseembed->name = external_format_string($panoptocourseembed->name, $context->id);
                 $options = ['noclean' => true];
-                list($panoptocourseembed->intro, $panoptocourseembed->introformat) =
-                    external_format_text($panoptocourseembed->intro,
+                [$panoptocourseembed->intro, $panoptocourseembed->introformat] =
+                    external_format_text(
+                        $panoptocourseembed->intro,
                         $panoptocourseembed->introformat,
                         $context->id,
                         'mod_panoptocourseembed',
                         'intro',
                         null,
-                        $options);
+                        $options
+                    );
                 $panoptocourseembed->introfiles =
                     external_util::get_area_files($context->id, 'mod_panoptocourseembed', 'intro', false, false);
 

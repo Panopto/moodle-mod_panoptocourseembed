@@ -32,7 +32,6 @@
  * Structure step to restore one panoptocourseembed activity
  */
 class restore_panoptocourseembed_activity_structure_step extends restore_activity_structure_step {
-
     /**
      * Define standard activity structure.
      */

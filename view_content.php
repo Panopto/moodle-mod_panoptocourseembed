@@ -52,9 +52,9 @@ require_login($course, true);
 if (empty($resourcelinkid)) {
     $pageurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
     $resourcelinkid = sha1(
-            $pageurl->out(false) . '&' . $course->id
-                . '&' . $course->startdate
-        );
+        $pageurl->out(false) . '&' . $course->id .
+        '&' . $course->startdate
+    );
 }
 
 $contenturl = urldecode(optional_param('contenturl', '', PARAM_URL));
@@ -96,7 +96,8 @@ if ($customdata) {
 $config = lti_get_type_type_config($toolid);
 if ($config->lti_ltiversion === LTI_VERSION_1P3) {
     if (!isset($SESSION->lti_initiatelogin_status)) {
-        echo lti_initiate_login($courseid,
+        echo lti_initiate_login(
+            $courseid,
             "mod_panoptocourseembed,'',{$toolid},{$resourcelinkid},{$contenturl},{$customdata}",
             $lti,
             $config

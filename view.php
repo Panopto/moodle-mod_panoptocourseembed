@@ -40,13 +40,12 @@ if ($id) {
     if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", ["id" => $cm->instance])) {
         throw new moodle_exception('invalidcoursemodule');
     }
-
 } else {
     $PAGE->set_url('/mod/panoptocourseembed/index.php', ['panoptoid' => $panoptoid]);
     if (! $panoptocourseembed = $DB->get_record("panoptocourseembed", ["id" => $panoptoid])) {
         throw new moodle_exception('invalidcoursemodule');
     }
-    if (! $course = $DB->get_record("course", ["id" => $panoptocourseembed->course]) ) {
+    if (! $course = $DB->get_record("course", ["id" => $panoptocourseembed->course])) {
         throw new moodle_exception('coursemisconf');
     }
     if (! $cm = get_coursemodule_from_instance("panoptocourseembed", $panoptocourseembed->id, $course->id)) {
@@ -57,5 +56,3 @@ if ($id) {
 require_login($course, true, $cm);
 
 redirect("$CFG->wwwroot/course/view.php?id=$course->id");
-
-

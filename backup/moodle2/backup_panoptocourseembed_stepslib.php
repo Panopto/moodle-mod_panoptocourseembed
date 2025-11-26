@@ -31,7 +31,6 @@
  * Define the complete panoptocourseembed structure for backup, with file and id annotations
  */
 class backup_panoptocourseembed_activity_structure_step extends backup_activity_structure_step {
-
     /**
      * Define standard activity structure.
      */
@@ -41,8 +40,11 @@ class backup_panoptocourseembed_activity_structure_step extends backup_activity_
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated.
-        $panoptocourseembed = new backup_nested_element('panoptocourseembed', ['id'],
-            ['name', 'intro', 'introformat', 'timemodified']);
+        $panoptocourseembed = new backup_nested_element(
+            'panoptocourseembed',
+            ['id'],
+            ['name', 'intro', 'introformat', 'timemodified']
+        );
 
         // Build the tree.
         // (love this).
