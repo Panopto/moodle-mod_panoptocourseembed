@@ -46,7 +46,6 @@ if (!empty($_SERVER['HTTP_REFERER']) && (strpos($_SERVER['HTTP_REFERER'], "/cour
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 $context = context_course::instance($courseid);
 $PAGE->set_context($context);
-require_login($course, true);
 
 // Not quite unique, but better than 99999 for old embeds.
 if (empty($resourcelinkid)) {
@@ -59,9 +58,6 @@ if (empty($resourcelinkid)) {
 
 $contenturl = urldecode(optional_param('contenturl', '', PARAM_URL));
 $customdata = urldecode(optional_param('custom', '', PARAM_RAW_TRIMMED));
-
-require_login($course);
-require_capability('mod/lti:view', $context);
 
 // Get a matching LTI tool for the course.
 $toolid = \panoptoblock_lti_utility::get_course_tool_id($courseid, 'panopto_course_embed_tool');
@@ -107,5 +103,8 @@ if ($config->lti_ltiversion === LTI_VERSION_1P3) {
         unset($SESSION->lti_initiatelogin_status);
     }
 }
+
+require_login($course, true);
+require_capability('mod/lti:view', $context);
 
 echo \panoptoblock_lti_utility::launch_tool($lti);

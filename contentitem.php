@@ -36,7 +36,6 @@ const COURSE_EMBED_PATH = '/mod/panoptocourseembed/contentitem_return.php';
 
 // Check access and capabilities.
 $course = get_course($courseid);
-require_login($course);
 
 $toolid = \panoptoblock_lti_utility::get_course_tool_id($courseid, 'panopto_course_embed_tool');
 
@@ -70,6 +69,8 @@ if ($config->lti_ltiversion === LTI_VERSION_1P3) {
         unset($SESSION->lti_initiatelogin_status);
     }
 }
+
+require_login($course);
 
 // Set the return URL. We send the launch container along to help us avoid
 // frames-within-frames when the user returns.
