@@ -49,7 +49,39 @@
  * @return whether the upgrade was a success
  */
 function xmldb_panoptocourseembed_upgrade($oldversion) {
-    global $CFG;
+    global $CFG, $DB;
+
+    if ($oldversion < 2026092200) {
+        require_once($CFG->dirroot . '/mod/panoptocourseembed/lib.php');
+
+        // Intros saved before sanitising was added reach the course page unfiltered, so clean them now.
+        $courseids = [];
+        $records = $DB->get_recordset('panoptocourseembed', null, 'id', 'id, course, intro, introformat');
+
+        foreach ($records as $record) {
+            upgrade_set_timeout();
+
+            $original = (string) $record->intro;
+
+            // Cleaned like a form submission, but without losing an embed saved under an older
+            // site address or alongside other markup. Nothing unsanitised is ever written back.
+            $intro = panoptocourseembed_upgrade_intro($original, $record->introformat ?? FORMAT_HTML);
+
+            if ($intro !== $original) {
+                $DB->set_field('panoptocourseembed', 'intro', $intro, ['id' => $record->id]);
+                $courseids[$record->course] = $record->course;
+            }
+        }
+
+        $records->close();
+
+        // The intro is cached in course modinfo, so drop the stale copies.
+        foreach ($courseids as $courseid) {
+            rebuild_course_cache($courseid, true);
+        }
+
+        upgrade_mod_savepoint(true, 2026092200, 'panoptocourseembed');
+    }
 
     return true;
 }

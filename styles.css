@@ -14,6 +14,14 @@
   margin-top: 20px;
 }
 
+/* Embeds saved before this rule carry an inline min-width:800px, which only !important can override. */
+iframe[src*="/mod/panoptocourseembed/view_content.php"] {
+  max-width: 100%;
+  /* stylelint-disable-next-line declaration-no-important */
+  min-width: 0 !important;
+  border: 0;
+}
+
 .panopto-btn-divider {
   position: relative;
   width: 20px;

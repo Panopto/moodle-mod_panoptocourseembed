@@ -35,6 +35,7 @@ $string['indicator:socialbreadth_help'] = 'This indicator is based on the social
 $string['indicator:socialbreadthdef'] = 'Panopto course embed social';
 $string['indicator:socialbreadthdef_help'] = 'The participant has reached this percentage of the social engagement offered by the Panopto course embed resources during this analysis interval (Levels = No participation, Participant alone)';
 $string['indicator:socialbreadthdef_link'] = 'Learning_analytics_indicators#Social_breadth';
+$string['invalid_content_host'] = 'The host for the target content must match one of the Panopto servers configured in the Panopto block for Moodle. If no Panopto server has been configured yet, ask your Moodle administrator to finish setting up the Panopto block.';
 $string['is_responsive'] = 'Responsive folders and videos';
 $string['is_responsive_desc'] = 'If this setting is turned on, both folder and videos will be responsive on the page. This will affect only new embeds, after settings is turned on.';
 $string['modulename'] = 'Panopto course embed';

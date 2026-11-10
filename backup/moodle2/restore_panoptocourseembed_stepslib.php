@@ -50,7 +50,9 @@ class restore_panoptocourseembed_activity_structure_step extends restore_activit
      * @param object $data
      */
     protected function process_panoptocourseembed($data) {
-        global $DB;
+        global $CFG, $DB;
+
+        require_once($CFG->dirroot . '/mod/panoptocourseembed/lib.php');
 
         $data = (object)$data;
         $oldid = $data->id;
@@ -59,10 +61,40 @@ class restore_panoptocourseembed_activity_structure_step extends restore_activit
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
 
+        // The backup file is user supplied, so the intro gets the same treatment as a form submission.
+        if (isset($data->intro)) {
+            $data->intro = panoptocourseembed_sanitise_intro(
+                $this->rewrite_original_wwwroot($data->intro),
+                $data->introformat ?? FORMAT_HTML
+            );
+        }
+
         // Insert the panoptocourseembed record.
         $newitemid = $DB->insert_record('panoptocourseembed', $data);
         // Immediately after inserting "activity" record, call this.
         $this->apply_activity_instance($newitemid);
+    }
+
+    /**
+     * Point an embed from another site at this site's view_content.php.
+     *
+     * Without this the sanitiser would treat the other site's URL as foreign and strip the embed.
+     *
+     * @param string $intro The intro from the backup.
+     * @return string The intro with the original site's embed URL replaced.
+     */
+    protected function rewrite_original_wwwroot($intro) {
+        global $CFG;
+
+        $originalwwwroot = $this->get_task()->get_info()->original_wwwroot ?? '';
+
+        if ($originalwwwroot === '' || $originalwwwroot === $CFG->wwwroot) {
+            return $intro;
+        }
+
+        $path = '/mod/panoptocourseembed/view_content.php';
+
+        return str_replace($originalwwwroot . $path, $CFG->wwwroot . $path, $intro);
     }
 
     /**
