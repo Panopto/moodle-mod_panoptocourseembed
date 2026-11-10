@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// phpcs:ignore moodle.Files.RequireLogin.Missing -- Login is enforced via panoptocourseembed_require_login_or_repost() below.
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
@@ -36,7 +37,13 @@ $jwt      = optional_param('JWT', '', PARAM_RAW);
 
 panoptocourseembed_require_login_or_repost($courseid);
 
+require_sesskey();
+
 $context = context_course::instance($courseid);
+
+// Must match the gate on contentitem.php: the request and return legs of one deep-link
+// flow have to agree, or a user can start a selection and not be allowed to finish it.
+require_capability('mod/panoptocourseembed:addinstance', $context);
 
 $items = '';
 
@@ -103,6 +110,23 @@ $customdata = $contentitems->{'@graph'}[0]->custom;
 unset($customdata->use_panopto_interactive_view);
 
 $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
+
+$detail = [
+    'title' => $title,
+    'ltiViewerUrl' => $ltiviewerurl->out(false),
+    'contentUrl' => $url,
+    'customData' => urlencode(json_encode($customdata)),
+    'width' => (int) $framewidth,
+    'height' => (int) $frameheight,
+];
+
+// Escaping the delimiters that are significant in an HTML script context is what keeps
+// tool-provider supplied values from breaking out of the emitted JavaScript literal.
+$detailjson = json_encode($detail, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+
+if ($detailjson === false) {
+    $errors[] = 'invalidjson';
+}
 ?>
 
 <?php
@@ -153,67 +177,15 @@ $ltiviewerurl = new moodle_url("/mod/panoptocourseembed/view_content.php");
          * Create and dispatch a custom event 'sessionSelected' with session details.
          * This event should close the Panopto popup and pass the new content URL to the existing iframe.
          */
-        const detailObject = {
-            title: "<?php
-            /**
-             * Title for the LTI viewer, generated without additional parameters.
-             *
-             * @package    mod_panoptocourseembed
-             * @copyright  2024 Panopto
-             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-             */
-            echo $title ?>",
-
-            ltiViewerUrl: "<?php
-            /**
-             * URL for the LTI viewer, generated without additional parameters.
-             *
-             * @package    mod_panoptocourseembed
-             * @copyright  2024 Panopto
-             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-             */
-            echo $ltiviewerurl->out(false) ?>",
-
-            contentUrl: "<?php
-            /**
-             * Content URL for embedding in the iframe.
-             *
-             * @package    mod_panoptocourseembed
-             * @copyright  2024 Panopto
-             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-             */
-            echo $url ?>",
-
-            customData: "<?php
-            /**
-             * Custom data encoded in JSON format, URL-encoded for safe transport.
-             *
-             * @package    mod_panoptocourseembed
-             * @copyright  2024 Panopto
-             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-             */
-            echo urlencode(json_encode($customdata)) ?>",
-
-            width: <?php
-            /**
-             * Frame width, dynamically retrieved from PHP.
-             *
-             * @package    mod_panoptocourseembed
-             * @copyright  2024 Panopto
-             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-             */
-            echo $framewidth ?>,
-
-            height: <?php
-            /**
-             * Frame height, dynamically retrieved from PHP.
-             *
-             * @package    mod_panoptocourseembed
-             * @copyright  2024 Panopto
-             * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-             */
-            echo $frameheight ?>
-        };
+        const detailObject = <?php
+        /**
+         * Session details, emitted as an encoded JSON literal.
+         *
+         * @package    mod_panoptocourseembed
+         * @copyright  2024 Panopto
+         * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+         */
+        echo $detailjson ?>;
 
         const sessionSelectedEvent = new CustomEvent('sessionSelected', {
             detail: detailObject,

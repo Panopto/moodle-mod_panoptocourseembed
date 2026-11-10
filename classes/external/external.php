@@ -38,6 +38,7 @@ use external_format_value;
 defined('MOODLE_INTERNAL') || die;
 
 require_once("$CFG->libdir/externallib.php");
+require_once("$CFG->dirroot/mod/panoptocourseembed/lib.php");
 
 /**
  * Panoptocourseembed external functions
@@ -105,6 +106,10 @@ class external extends external_api {
                 // Entry to return.
                 $panoptocourseembed->name = external_format_string($panoptocourseembed->name, $context->id);
                 $options = ['noclean' => true];
+                $panoptocourseembed->intro = panoptocourseembed_set_intro_course(
+                    $panoptocourseembed->intro,
+                    $panoptocourseembed->course
+                );
                 [$panoptocourseembed->intro, $panoptocourseembed->introformat] =
                     external_format_text(
                         $panoptocourseembed->intro,

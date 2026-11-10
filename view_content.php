@@ -27,25 +27,43 @@
  */
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
+require_once($CFG->dirroot . '/blocks/panopto/lib/block_panopto_lib.php');
 require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/lib.php');
 require_once(dirname(dirname(dirname(__FILE__))) . '/mod/lti/locallib.php');
 
 $courseid  = required_param('course', PARAM_INT);
 $resourcelinkid  = optional_param('resourcelinkid', '', PARAM_INT);
 
-// Try to detect if we are viewing content from an iframe nested in course, get the Id param if it exists.
-if (!empty($_SERVER['HTTP_REFERER']) && (strpos($_SERVER['HTTP_REFERER'], "/course/view.php") !== false)) {
+// Try to detect if we are viewing content from an iframe nested in course, get the Id param if
+// it exists. Anchored on wwwroot: an unanchored search would let a referer of
+// https://evil.example/course/view.php?id=99 choose the course, and with it the tool lookup and
+// the context the capability below is checked against.
+if (
+    !empty($_SERVER['HTTP_REFERER']) && is_scalar($_SERVER['HTTP_REFERER'])
+        && strpos($_SERVER['HTTP_REFERER'], $CFG->wwwroot . '/course/view.php') === 0
+) {
     $components = parse_url($_SERVER['HTTP_REFERER']);
-    parse_str($components['query'], $results);
+    parse_str($components['query'] ?? '', $results);
 
-    if (!empty($results['id'])) {
-        $courseid = $results['id'];
+    // The is_scalar check guards against ?id[]=1, which would make clean_param throw.
+    if (!empty($results['id']) && is_scalar($results['id'])) {
+        // Clean and validate the course ID parameter from referer URL for security.
+        $referercourseid = clean_param($results['id'], PARAM_INT);
+
+        if ($referercourseid > 0) {
+            $courseid = $referercourseid;
+        }
     }
 }
 
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 $context = context_course::instance($courseid);
 $PAGE->set_context($context);
+
+// Authenticate before anything else: the LTI 1.3 branch further down exits, so checks placed
+// after it never run on the first pass of a 1.3 launch.
+require_login($course, true);
+require_capability('mod/lti:view', $context);
 
 // Not quite unique, but better than 99999 for old embeds.
 if (empty($resourcelinkid)) {
@@ -58,6 +76,13 @@ if (empty($resourcelinkid)) {
 
 $contenturl = urldecode(optional_param('contenturl', '', PARAM_URL));
 $customdata = urldecode(optional_param('custom', '', PARAM_RAW_TRIMMED));
+
+// The content URL becomes the endpoint a signed launch is posted to, so an unrecognised
+// host would leak the launch and its identity claims off-site. An empty value is fine:
+// the launch then targets the tool's own configured endpoint.
+if (!empty($contenturl) && !panopto_is_allowed_panopto_host($contenturl)) {
+    throw new moodle_exception('invalid_content_host', 'panoptocourseembed');
+}
 
 // Get a matching LTI tool for the course.
 $toolid = \panoptoblock_lti_utility::get_course_tool_id($courseid, 'panopto_course_embed_tool');
@@ -75,18 +100,13 @@ $lti->id = $resourcelinkid;
 $lti->typeid = $toolid;
 $lti->launchcontainer = LTI_LAUNCH_CONTAINER_WINDOW;
 $lti->toolurl = $contenturl;
-$lti->custom = new stdClass();
+$lti->custom = \panoptoblock_lti_utility::filter_launch_custom_parameters(
+    $customdata,
+    'mod_panoptocourseembed'
+);
 $lti->instructorcustomparameters = [];
 $lti->debuglaunch = false;
 $lti->course = $courseid;
-
-if ($customdata) {
-    $decoded = json_decode($customdata, true);
-
-    foreach ($decoded as $key => $value) {
-        $lti->custom->$key = $value;
-    }
-}
 
 // LTI 1.3 login request.
 $config = lti_get_type_type_config($toolid);
@@ -94,7 +114,14 @@ if ($config->lti_ltiversion === LTI_VERSION_1P3) {
     if (!isset($SESSION->lti_initiatelogin_status)) {
         echo lti_initiate_login(
             $courseid,
-            "mod_panoptocourseembed,'',{$toolid},{$resourcelinkid},{$contenturl},{$customdata}",
+            \panoptoblock_lti_utility::build_playback_launch_hint(
+                'mod_panoptocourseembed',
+                '',
+                $toolid,
+                $resourcelinkid,
+                $contenturl,
+                $lti->custom
+            ),
             $lti,
             $config
         );
@@ -104,7 +131,7 @@ if ($config->lti_ltiversion === LTI_VERSION_1P3) {
     }
 }
 
-require_login($course, true);
-require_capability('mod/lti:view', $context);
+// Set the platform-owned flag the allowlist omits.
+$lti->custom->grading_not_supported = true;
 
 echo \panoptoblock_lti_utility::launch_tool($lti);

@@ -37,6 +37,16 @@ const COURSE_EMBED_PATH = '/mod/panoptocourseembed/contentitem_return.php';
 // Check access and capabilities.
 $course = get_course($courseid);
 
+// Authenticate and authorise before anything else: the LTI 1.3 branch below exits, so
+// checks placed after it never run on the first pass of a 1.3 launch.
+require_login($course);
+
+$context = context_course::instance($courseid);
+
+// The only caller is the activity add/edit form, which is already behind addinstance and
+// manageactivities. There is no student path here, so require the capability outright.
+require_capability('mod/panoptocourseembed:addinstance', $context);
+
 $toolid = \panoptoblock_lti_utility::get_course_tool_id($courseid, 'panopto_course_embed_tool');
 
 // If no lti tool exists then we can not continue.
@@ -69,8 +79,6 @@ if ($config->lti_ltiversion === LTI_VERSION_1P3) {
         unset($SESSION->lti_initiatelogin_status);
     }
 }
-
-require_login($course);
 
 // Set the return URL. We send the launch container along to help us avoid
 // frames-within-frames when the user returns.
